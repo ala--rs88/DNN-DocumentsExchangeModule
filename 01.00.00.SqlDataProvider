@@ -1,0 +1,169 @@
+﻿/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for [dbo]. and   *****/
+/*****                                                  *****/
+/************************************************************/
+
+/** Create Table **/
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule]') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE [dbo].[IgorKarpov_DocumentsExchangeModule]
+		(
+			[ModuleID] [int] NOT NULL,
+			[ItemID] [int] NOT NULL IDENTITY(1, 1),
+			[Content] [ntext] NOT NULL,
+			[CreatedByUser] [int] NOT NULL,
+			[CreatedDate] [datetime] NOT NULL
+		)
+
+		ALTER TABLE [dbo].[IgorKarpov_DocumentsExchangeModule] ADD CONSTRAINT [PK_IgorKarpov_DocumentsExchangeModule] PRIMARY KEY CLUSTERED  ([ItemID])
+		CREATE NONCLUSTERED INDEX [IX_IgorKarpov_DocumentsExchangeModule] ON [dbo].[IgorKarpov_DocumentsExchangeModule] ([ModuleID])
+
+		ALTER TABLE [dbo].[IgorKarpov_DocumentsExchangeModule] WITH NOCHECK ADD CONSTRAINT [FK_IgorKarpov_DocumentsExchangeModule_Modules] FOREIGN KEY ([ModuleID]) REFERENCES [dbo].[Modules] ([ModuleID]) ON DELETE CASCADE NOT FOR REPLICATION
+	END
+GO
+
+
+/** Drop Existing Stored Procedures **/
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_GetDocumentsExchangeModules]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].IgorKarpov_GetDocumentsExchangeModules
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_GetDocumentsExchangeModule]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].IgorKarpov_GetDocumentsExchangeModule
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_AddDocumentsExchangeModule]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].IgorKarpov_AddDocumentsExchangeModule
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_UpdateDocumentsExchangeModule]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].IgorKarpov_UpdateDocumentsExchangeModule
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DeleteDocumentsExchangeModule]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].IgorKarpov_DeleteDocumentsExchangeModule
+GO
+
+/** Create Stored Procedures **/
+
+
+create procedure [dbo].IgorKarpov_GetDocumentsExchangeModules
+
+	@ModuleId int
+
+as
+
+select ModuleId,
+       ItemId,
+       Content,
+       CreatedByUser,
+       IgorKarpov_DocumentsExchangeModule.CreatedDate,
+       'CreatedByUserName' = Users.FirstName + ' ' + Users.LastName
+from IgorKarpov_DocumentsExchangeModule
+inner join Users on IgorKarpov_DocumentsExchangeModule.CreatedByUser = Users.UserId
+where  ModuleId = @ModuleId
+GO
+
+create procedure [dbo].IgorKarpov_GetDocumentsExchangeModulesByUser
+
+	@ModuleId int,
+	@UserId int
+
+as
+
+select ModuleId,
+       ItemId,
+       Content,
+       CreatedByUser,
+       IgorKarpov_DocumentsExchangeModule.CreatedDate
+from IgorKarpov_DocumentsExchangeModule
+inner join Users on IgorKarpov_DocumentsExchangeModule.CreatedByUser = Users.UserId
+where  ModuleId = @ModuleId
+	and CreatedByUser = @UserId
+GO
+
+create procedure [dbo].IgorKarpov_GetDocumentsExchangeModule
+
+	@ModuleId int,
+        @ItemId int
+
+as
+
+select ModuleId,
+       ItemId,
+       Content,
+       CreatedByUser,
+       IgorKarpov_DocumentsExchangeModule.CreatedDate,
+       'CreatedByUserName' = Users.FirstName + ' ' + Users.LastName
+from IgorKarpov_DocumentsExchangeModule
+inner join Users on IgorKarpov_DocumentsExchangeModule.CreatedByUser = Users.UserId
+where  ModuleId = @ModuleId
+and ItemId = @ItemId
+GO
+
+
+create procedure [dbo].IgorKarpov_AddDocumentsExchangeModule
+
+	@ModuleId       int,
+	@Content        ntext,
+	@UserID         int
+
+as
+
+insert into IgorKarpov_DocumentsExchangeModule (
+	ModuleId,
+	Content,
+	CreatedByUser,
+	CreatedDate
+) 
+values (
+	@ModuleId,
+	@Content,
+	@UserID,
+	getdate()
+)
+
+GO
+
+create procedure [dbo].IgorKarpov_UpdateDocumentsExchangeModule
+
+	@ModuleId       int,
+        @ItemId         int,
+	@Content        ntext,
+	@UserID         int
+
+as
+
+update IgorKarpov_DocumentsExchangeModule
+set    Content       = @Content,
+       CreatedByUser = @UserID,
+       CreatedDate   = getdate()
+where  ModuleId = @ModuleId
+and    ItemId = @ItemId
+
+GO
+
+create procedure [dbo].IgorKarpov_DeleteDocumentsExchangeModule
+
+	@ModuleId       int,
+        @ItemId         int
+
+as
+
+delete
+from   IgorKarpov_DocumentsExchangeModule
+where  ModuleId = @ModuleId
+and    ItemId = @ItemId
+
+GO
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

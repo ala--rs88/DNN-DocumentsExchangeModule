@@ -1,0 +1,44 @@
+﻿/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for [dbo]. and   *****/
+/*****                                                  *****/
+/************************************************************/
+
+/** Drop FAQs Table **/
+
+ALTER TABLE [dbo].[IgorKarpov_DocumentsExchangeModule] DROP CONSTRAINT [FK_DocumentsExchangeModule_Modules]
+GO
+
+ALTER TABLE [dbo].[IgorKarpov_DocumentsExchangeModule] DROP CONSTRAINT [PK_IgorKarpov_DocumentsExchangeModule]
+GO
+
+DROP INDEX [dbo].[IgorKarpov_DocumentsExchangeModule].[IX_IgorKarpov_DocumentsExchangeModule]
+GO
+
+DROP TABLE [dbo].[IgorKarpov_DocumentsExchangeModule]
+GO
+
+/** Drop Stored Procedures **/
+
+DROP PROCEDURE [dbo].[IgorKarpov_GetDocumentsExchangeModules]
+GO
+
+DROP PROCEDURE [dbo].[IgorKarpov_GetDocumentsExchangeModule]
+GO
+
+DROP PROCEDURE [dbo].[IgorKarpov_AddDocumentsExchangeModule]
+GO
+
+DROP PROCEDURE [dbo].[IgorKarpov_UpdateDocumentsExchangeModule]
+GO
+
+DROP PROCEDURE [dbo].[IgorKarpov_DeleteDocumentsExchangeModule]
+GO
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/
