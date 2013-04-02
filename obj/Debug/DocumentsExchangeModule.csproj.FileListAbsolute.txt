@@ -5,3 +5,4 @@ C:\inetpub\wwwroot\DNNDemo\bin\YourCompany.Modules.DocumentsExchangeModule.dll
 C:\inetpub\wwwroot\DNNDemo\bin\YourCompany.Modules.DocumentsExchangeModule.pdb
 C:\inetpub\wwwroot\DNNDemo\DesktopModules\IgorKarpov.DocumentsExchangeModule\obj\Debug\YourCompany.Modules.DocumentsExchangeModule.dll
 C:\inetpub\wwwroot\DNNDemo\DesktopModules\IgorKarpov.DocumentsExchangeModule\obj\Debug\YourCompany.Modules.DocumentsExchangeModule.pdb
+C:\inetpub\wwwroot\DNNDemo\DesktopModules\IgorKarpov.DocumentsExchangeModule\obj\Debug\DocumentsExchangeModule.csprojResolveAssemblyReference.cache

@@ -128,8 +128,8 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
 
             // assign the content 
             ((Label)e.Item.FindControl("lblContent")).Text = DataBinder.Eval(e.Item.DataItem, "Content").ToString();
-            ((Label)e.Item.FindControl("createdByLable")).Text = DataBinder.Eval(e.Item.DataItem, "CreatedByUser").ToString();
-            ((Label)e.Item.FindControl("creationDateLabel")).Text = DataBinder.Eval(e.Item.DataItem, "CreatedDate").ToString();
+            ((Label)e.Item.FindControl("lblCreatedBy")).Text = DataBinder.Eval(e.Item.DataItem, "CreatedByUser").ToString();
+            ((Label)e.Item.FindControl("lblCreationDate")).Text = DataBinder.Eval(e.Item.DataItem, "CreatedDate").ToString();
         }
 
         #endregion

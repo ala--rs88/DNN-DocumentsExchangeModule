@@ -18,32 +18,16 @@
 // DEALINGS IN THE SOFTWARE. 
 // 
 
-using System;
-using System.Configuration;
-using System.Data;
-using System.Xml;
-using System.Web;
 using System.Collections.Generic;
-
-using DotNetNuke;
-using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
-using DotNetNuke.Entities.Users;
-using DotNetNuke.Services.Search;
 using DotNetNuke.Entities.Modules;
+using DotNetNuke.Services.Search;
 
 namespace IgorKarpov.Modules.DocumentsExchangeModule
-{
-
-    /// ----------------------------------------------------------------------------- 
+{ 
     /// <summary> 
     /// The Controller class for DocumentsExchangeModule 
-    /// </summary> 
-    /// <remarks> 
-    /// </remarks> 
-    /// <history> 
-    /// </history> 
-    /// ----------------------------------------------------------------------------- 
+    /// </summary> - 
     public class DocumentsExchangeModuleController : ISearchable
     {
 
