@@ -19,21 +19,18 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-
-using DotNetNuke;
-using DotNetNuke.Common.Utilities;
-using DotNetNuke.Security;
-using DotNetNuke.Services.Exceptions;
-using DotNetNuke.Services.Localization;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Modules.Actions;
+using DotNetNuke.Services.Exceptions;
+using DotNetNuke.Services.Localization;
+using IgorKarpov.DocumentsExchangeModule.Components.Entities;
+//using File = System.IO.File;
+using File = IgorKarpov.DocumentsExchangeModule.Components.Entities.File;
 
 namespace IgorKarpov.Modules.DocumentsExchangeModule
 {
@@ -66,11 +63,11 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             }
             try
             {
-                DocumentsExchangeModuleController objDocumentsExchangeModules = new DocumentsExchangeModuleController();
-                List<DocumentsExchangeModuleInfo> colDocumentsExchangeModules;
+                DocumentsExchangeModuleController moduleController = new DocumentsExchangeModuleController();
 
                 // get the content from the DocumentsExchangeModule table 
-                colDocumentsExchangeModules = objDocumentsExchangeModules.GetDocumentsExchangeModulesByUser(ModuleId, UserInfo.UserID);
+                List<DocumentsExchangeModuleInfo> colDocumentsExchangeModules =
+                        moduleController.GetDocumentsExchangeModulesByUser(ModuleId, UserInfo.UserID);
 
                 //if (colDocumentsExchangeModules.Count == 0)
                 //{
@@ -87,49 +84,38 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                 //}
 
                 // bind the content to the repeater 
-                lstContent.DataSource = colDocumentsExchangeModules;
-                lstContent.DataBind();
+                //lstFolders.DataSource = colDocumentsExchangeModules;
+                //lstFolders.DataBind();
+
+                UpdateNavigationListControls(null);
             }
 
             catch (Exception exc)
             {
-                //Module failed to load 
                 Exceptions.ProcessModuleLoadException(this, exc);
             }
         }
 
         /// ----------------------------------------------------------------------------- 
         /// <summary>
-        /// lstContent_ItemDataBound runs when items are bound. Here the 
+        /// lstFolders_ItemDataBound runs when items are bound. Here the 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// ----------------------------------------------------------------------------- 
-        protected void lstContent_ItemDataBound(object sender, System.Web.UI.WebControls.DataListItemEventArgs e)
+        protected void lstFolders_ItemDataBound(object sender, System.Web.UI.WebControls.DataListItemEventArgs e)
         {
-            //String content = "";
-            //String createdBy = "";
-            //String creationDate = "";
+            ((LinkButton)e.Item.FindControl("lbtnFolderName")).Text = ((Folder)e.Item.DataItem).Name;
+            ((Label)e.Item.FindControl("lblCreatedBy")).Text = ((Folder)e.Item.DataItem).CreatorUserId.ToString();
+            ((Label)e.Item.FindControl("lblCreationDate")).Text = ((Folder)e.Item.DataItem).CreationDate.ToString();
+        }
 
-            // add content to template 
-            //if (!string.IsNullOrEmpty((string)Settings["template"]))
-            //{
-            //    content = (string)Settings["template"];
-            //    ArrayList objProperties = CBO.GetPropertyInfo(typeof(DocumentsExchangeModuleInfo));
-            //    foreach (PropertyInfo objPropertyInfo in objProperties)
-            //    {
-            //        content = content.Replace("[" + objPropertyInfo.Name.ToUpper() + "]", Server.HtmlDecode(DataBinder.Eval(e.Item.DataItem, objPropertyInfo.Name).ToString()));
-            //    }
-            //}
-            //else
-            //{
-            //    content = DataBinder.Eval(e.Item.DataItem, "Content").ToString();
-            //}
-
-            // assign the content 
-            ((Label)e.Item.FindControl("lblContent")).Text = DataBinder.Eval(e.Item.DataItem, "Content").ToString();
-            ((Label)e.Item.FindControl("lblCreatedBy")).Text = DataBinder.Eval(e.Item.DataItem, "CreatedByUser").ToString();
-            ((Label)e.Item.FindControl("lblCreationDate")).Text = DataBinder.Eval(e.Item.DataItem, "CreatedDate").ToString();
+        protected void lstFiles_ItemDataBound(object sender, System.Web.UI.WebControls.DataListItemEventArgs e)
+        {
+            ((Label)e.Item.FindControl("lblOriginalName")).Text = ((File) e.Item.DataItem).OriginalName;
+            ((Label)e.Item.FindControl("lblCreationDate")).Text = ((File)e.Item.DataItem).CreationDate.ToString();
+            ((Label) e.Item.FindControl("lblCreatedBy")).Text = ((File) e.Item.DataItem).CreatorUserId.ToString();
+            ((Label)e.Item.FindControl("lblLastVersionDate")).Text = DateTime.Now.ToString();
         }
 
         #endregion
@@ -173,6 +159,10 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
 
         protected void uploadButton_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrWhiteSpace(fileUploader.FileName))
+            {
+                return;
+            }
             fileUploader.SaveAs(Server.MapPath("~/DesktopModules/IgorKarpov.DocumentsExchangeModule/Uploads/") +
                                     "uploaded_" +
                                     Path.GetFileName(fileUploader.FileName));
@@ -193,7 +183,7 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         /// Content Type of the downloadable file (e.g. application/pdf)
         private void DownloadFile(String strPath, String strFileName, String strContentType)
         {
-            if (File.Exists(strPath + strFileName))
+            if (System.IO.File.Exists(strPath + strFileName))
             {
                 Response.ContentType = strContentType;
                 Response.AddHeader("content-disposition", "attachment; filename=" + strFileName);
@@ -208,6 +198,51 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
 
                 Response.BinaryWrite(getContent);
             }
+        }
+
+        private void UpdateNavigationListControls(int? parentFolderId)
+        {
+            List<Folder> folders = new List<Folder>
+                    {
+                        new Folder
+                            {
+                                Id = 1,
+                                Name = "Name1",
+                                CreatorUserId = 1,
+                                CreationDate = DateTime.Now,
+                            },
+                        new Folder
+                            {
+                                Id = 2,
+                                Name = "Name2",
+                                CreatorUserId = 1,
+                                CreationDate = DateTime.Now,
+                            }
+                    };
+            List<File> files = new List<File>
+                    {
+                        new File
+                            {
+                                OriginalName = "File1",
+                                CreationDate = DateTime.Now
+                            },
+                        new File
+                            {
+                                OriginalName = "File2",
+                                CreationDate = DateTime.Now
+                            }
+                    };
+            lstFolders.DataSource = folders;
+            lstFolders.DataBind();
+
+            lstFiles.DataSource = files;
+            lstFiles.DataBind();
+        }
+
+        protected void lbtnFolderName_Click(object sender, EventArgs e)
+        {
+            LinkButton clickedButton = ((LinkButton)sender);
+            clickedButton.Text = lstFolders.DataKeys[((DataListItem)clickedButton.NamingContainer).ItemIndex].ToString();
         }
 
     }

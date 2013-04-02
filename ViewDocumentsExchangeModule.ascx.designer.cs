@@ -31,13 +31,22 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule {
         protected global::System.Web.UI.WebControls.View filesPage;
         
         /// <summary>
-        /// lstContent control.
+        /// lstFolders control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DataList lstContent;
+        protected global::System.Web.UI.WebControls.DataList lstFolders;
+        
+        /// <summary>
+        /// lstFiles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DataList lstFiles;
         
         /// <summary>
         /// showUploadPageButton control.

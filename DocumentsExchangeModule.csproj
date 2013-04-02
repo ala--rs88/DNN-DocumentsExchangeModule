@@ -10,8 +10,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DocumentsExchangeModule</RootNamespace>
-    <AssemblyName>YourCompany.Modules.DocumentsExchangeModule</AssemblyName>
+    <RootNamespace>IgorKarpov.DocumentsExchangeModule</RootNamespace>
+    <AssemblyName>IgorKarpov.Modules.DocumentsExchangeModule</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -32,7 +32,7 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\bin\YourCompany.Modules.DocumentsExchangeModule.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\IgorKarpov.Modules.DocumentsExchangeModule.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -72,6 +72,9 @@
     <Compile Include="Components\DataProvider.cs" />
     <Compile Include="Components\DocumentsExchangeModuleController.cs" />
     <Compile Include="Components\DocumentsExchangeModuleInfo.cs" />
+    <Compile Include="Components\Entities\File.cs" />
+    <Compile Include="Components\Entities\FileVersion.cs" />
+    <Compile Include="Components\Entities\Folder.cs" />
     <Compile Include="Components\SqlDataProvider.cs" />
     <Compile Include="EditDocumentsExchangeModule.ascx.cs">
       <DependentUpon>EditDocumentsExchangeModule.ascx</DependentUpon>
@@ -125,6 +128,7 @@
     <Content Include="Settings.ascx" />
     <Content Include="ViewDocumentsExchangeModule.ascx" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

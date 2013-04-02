@@ -193,7 +193,8 @@ if not exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKa
 			[Id] int PRIMARY KEY IDENTITY(1, 1) NOT NULL,
 			[ParentFolderId] int FOREIGN KEY REFERENCES [dbo].[IgorKarpov_DocumentsExchangeModule_Folders](Id),
 			[OriginalName] nvarchar(100) NOT NULL,
-			[ConcentType] nvarchar(100) NOT NULL
+			[ConcentType] nvarchar(100) NOT NULL,
+			[CreationDate] datetime NOT NULL
 		)
 	END
 GO
