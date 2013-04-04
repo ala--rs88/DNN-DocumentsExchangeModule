@@ -153,6 +153,7 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
 
         protected void lbtnShowCreateFolder_Click(object sender, EventArgs e)
         {
+            txtbxTargetFileName.Text = String.Empty;
             multiView.SetActiveView(createFolderPage);
         }
 
@@ -249,6 +250,20 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             UpdateUpButtonVisibility();
         }
 
+        protected void btnCreateFolder_Click(object sender, EventArgs e)
+        {
+            String targetFileName = txtbxTargetFileName.Text;
+            List<int?> foldersTrace = ViewState[FOLDERS_TRACE] as List<int?>;
+            int? parentFolderId = (foldersTrace != null) ?
+                        foldersTrace[foldersTrace.Count - 1] :
+                        null;
+            (new DocumentsExchangeModuleController()).AddFolder(parentFolderId,
+                            targetFileName,
+                            UserId);
+            UpdateNavigationControls(parentFolderId);
+            multiView.SetActiveView(filesPage);
+        }
+
         protected void lbtnFolderName_Click(object sender, EventArgs e)
         {
             UpdateNavigationControls(int.Parse(lstFolders.
@@ -257,6 +272,7 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                                                             NamingContainer).ItemIndex]
                                                 .ToString()));
         }
+
 
         protected void lbtnFileName_Click(object sender, EventArgs e)
         {

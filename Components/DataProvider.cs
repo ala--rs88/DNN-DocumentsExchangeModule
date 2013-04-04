@@ -60,6 +60,10 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         public abstract String GetFileContentType(int fileId);
         public abstract String GetFileLastVersionLocalName(int fileId);
 
+        public abstract bool IsOriginalFileNameLocallyAvailable(int? parentFolderId, String targetName);
+        public abstract bool IsFolderNameLocallyAvailable(int? parentFolderId, String targetName);
+        public abstract void AddFolder(int? parentFolderId, String name, int creatorUserId);
+
         public abstract IDataReader GetDocumentsExchangeModules(int ModuleId);
         public abstract IDataReader GetDocumentsExchangeModulesByUser(int ModuleId, int UserId);
         public abstract IDataReader GetDocumentsExchangeModule(int ModuleId, int ItemId);

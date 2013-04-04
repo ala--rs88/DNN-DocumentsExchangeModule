@@ -137,6 +137,39 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             return (String)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
         }
 
+        public override bool IsOriginalFileNameLocallyAvailable(int? parentFolderId, String targetaName)
+        {
+            String parentFolderIdString = parentFolderId.HasValue
+                                              ? parentFolderId.Value.ToString()
+                                              : "NULL";
+            String command = String.Format("select {0} ({1}, N'{2}')",
+                            GetFullyQualifiedName("DocumentsExchangeModule_IsOriginalFileNameLocallyAvailable"),
+                            parentFolderIdString,
+                            targetaName);
+            return (bool)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
+        }
+
+        public override bool IsFolderNameLocallyAvailable(int? parentFolderId, String targetaName)
+        {
+            String parentFolderIdString = parentFolderId.HasValue
+                                              ? parentFolderId.Value.ToString()
+                                              : "NULL";
+            String command = String.Format("select {0} ({1}, N'{2}')",
+                            GetFullyQualifiedName("DocumentsExchangeModule_IsFolderNameLocallyAvailable"),
+                            parentFolderIdString,
+                            targetaName);
+            return (bool)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
+        }
+
+        public override void AddFolder(int? parentFolderId, string name, int creatorUserId)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                        GetFullyQualifiedName("DocumentsExchangeModule_AddFolder"),
+                        parentFolderId,
+                        name,
+                        creatorUserId);
+        }
+
         public override IDataReader GetDocumentsExchangeModules(int ModuleId)
         {
             return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetDocumentsExchangeModules"), ModuleId);
@@ -169,5 +202,6 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         {
             return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetDocumentsExchangeModulesByUser"), ModuleId, UserId);
         }
+
     }
 }

@@ -108,6 +108,8 @@
     </asp:View>
     
     <asp:View ID="createFolderPage" runat="server">
+        <asp:TextBox ID="txtbxTargetFileName" runat="server"></asp:TextBox>
+        <asp:Button ID="btnCreateFolder" Text="Create folder" OnClick="btnCreateFolder_Click" runat="server"/>
         <asp:LinkButton runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
     </asp:View>
 

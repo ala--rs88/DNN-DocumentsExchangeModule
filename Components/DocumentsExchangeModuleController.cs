@@ -165,5 +165,35 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         {
             return DataProvider.Instance().GetFileLastVersionLocalName(fileId);
         }
+
+        private bool IsOriginalFileNameLocallyAvailable(int? parentFolderId, String targetName)
+        {
+            return DataProvider.Instance().
+                IsOriginalFileNameLocallyAvailable(parentFolderId, targetName);
+        }
+
+        private bool IsFolderNameLocallyAvailable(int? parentFolderId, String targetName)
+        {
+            return DataProvider.Instance().
+                IsFolderNameLocallyAvailable(parentFolderId, targetName);
+        }
+
+        internal void AddFolder(int? parentFolderId, String targetName, int creatorUserId)
+        {
+            String calculatedName = targetName;
+            int i = 0;
+            while (!IsFolderNameLocallyAvailable(parentFolderId, calculatedName) &&
+                   i < 10)
+            {
+                calculatedName = String.Format("({0}) {1}",
+                                               i + 2,
+                                               targetName);
+                i++;
+            }
+            if (i < 10)
+            {
+                DataProvider.Instance().AddFolder(parentFolderId, calculatedName, creatorUserId);
+            }
+        }
     }
 }
