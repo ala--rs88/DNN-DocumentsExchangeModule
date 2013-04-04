@@ -1,8 +1,8 @@
-<%@ Control Language="C#" Inherits="IgorKarpov.Modules.DocumentsExchangeModule.ViewDocumentsExchangeModule"
+    <%@ Control Language="C#" Inherits="IgorKarpov.Modules.DocumentsExchangeModule.ViewDocumentsExchangeModule"
     AutoEventWireup="true" CodeBehind="ViewDocumentsExchangeModule.ascx.cs" %>
 
 
-
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 <asp:MultiView ID="multiView" runat="server" ActiveViewIndex="0">
     <asp:View ID="filesPage" runat="server">
@@ -46,11 +46,11 @@
                         <td valign="top" width="20%" align="center"></td>
                         <td valign="top" width="10%" align="right">
 
-                            <asp:HyperLink ID="HyperLink1" NavigateUrl='<%# EditUrl("Id",DataBinder.Eval(Container.DataItem,"Id").ToString()) %>' 
+                            <%--<asp:HyperLink ID="HyperLink1" NavigateUrl='<%# EditUrl("Id",DataBinder.Eval(Container.DataItem,"Id").ToString()) %>' 
                                 Visible="<%# IsEditable %>" runat="server">
                                 <asp:Image ID="Image1" runat="server" ImageUrl="~/images/edit.gif" AlternateText="Edit"
                                     Visible="<%#IsEditable%>" resourcekey="Edit" />
-                            </asp:HyperLink>
+                            </asp:HyperLink>--%>
                             <asp:Button ID="deleteItemButton" runat="server" Text="X" Height="23px" Width="23px" />
 
                         </td>
@@ -78,11 +78,11 @@
                         </td>
                         <td valign="top" width="10%" align="right">
 
-                            <asp:HyperLink ID="HyperLink1" NavigateUrl='<%# EditUrl("Id",DataBinder.Eval(Container.DataItem,"Id").ToString()) %>' 
+                            <%--<asp:HyperLink ID="HyperLink1" NavigateUrl='<%# EditUrl("Id",DataBinder.Eval(Container.DataItem,"Id").ToString()) %>' 
                                 Visible="<%# IsEditable %>" runat="server">
                                 <asp:Image ID="Image1" runat="server" ImageUrl="~/images/edit.gif" AlternateText="Edit"
                                     Visible="<%#IsEditable%>" resourcekey="Edit" />
-                            </asp:HyperLink>
+                            </asp:HyperLink>--%>
                             <asp:Button ID="deleteItemButton" runat="server" Text="X" Height="23px" Width="23px" />
 
                         </td>
@@ -103,8 +103,18 @@
         <asp:FileUpload ID="fileUploader" runat="server" />
         <asp:Button ID="uploadButton" runat="server" CssClass="myButton" Text="Upload" OnClick="uploadButton_Click" />
         <asp:Panel ID="Panel1" runat="server">
-            <asp:LinkButton ID="lbtnShowFilesPage" runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
+            <div class="backButton">
+                <asp:LinkButton ID="lbtnShowFilesPage" runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
+            </div>
         </asp:Panel>
+        <script>
+            $(function () {
+                $('div.backButton a').click(function () {
+                    var $fileInput = $('input:file');
+                    $fileInput.replaceWith($fileInput.val('').clone(true));
+                });
+            });
+        </script>
     </asp:View>
     
     <asp:View ID="createFolderPage" runat="server">
@@ -118,5 +128,3 @@
 <p>
     &nbsp;
 </p>
-
-

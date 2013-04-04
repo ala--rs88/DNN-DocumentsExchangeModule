@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Web;
+using System.Web.UI.WebControls;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Services.Search;
 using IgorKarpov.DocumentsExchangeModule.Components.Entities;
+using File = IgorKarpov.DocumentsExchangeModule.Components.Entities.File;
 
 namespace IgorKarpov.Modules.DocumentsExchangeModule
 { 
@@ -194,6 +198,97 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             {
                 DataProvider.Instance().AddFolder(parentFolderId, calculatedName, creatorUserId);
             }
+        }
+
+        private String CalculateLocallyUniqueFileName(int? parentFolderId, String targetFileName)
+        {
+            String calculatedName = targetFileName;
+            int i = 0;
+            while (!IsOriginalFileNameLocallyAvailable(parentFolderId, calculatedName) &&
+                   i < 10)
+            {
+                calculatedName = String.Format("({0}) {1}",
+                                               i + 2,
+                                               targetFileName);
+                i++;
+            }
+            return i < 10 ? calculatedName : null;
+        }
+
+        internal bool UploadNewFile(int? parentFolderId,
+                                 int creatorUserId,
+                                 FileUpload fileUploader,
+                                 String uploadsFolderPath,
+                                 HttpResponse response)
+        {
+            if (!Directory.Exists(uploadsFolderPath))
+            {
+                return false;
+            }
+
+            String calculatedOriginalFileName = CalculateLocallyUniqueFileName(parentFolderId,
+                                            Path.GetFileName(fileUploader.FileName));
+            if (String.IsNullOrWhiteSpace(calculatedOriginalFileName))
+            {
+                return false;
+            }
+
+            String calculatedLocalFileName = Guid.NewGuid().ToString() +
+                                    Path.GetExtension(fileUploader.FileName);
+            int i = 0;
+            while (System.IO.File.Exists(uploadsFolderPath + calculatedLocalFileName) &&
+                   i < 10)
+            {
+                calculatedLocalFileName = Guid.NewGuid().ToString() +
+                                    Path.GetExtension(fileUploader.FileName);
+                i++;
+            }
+            if (i >= 10)
+            {
+                return false;
+            }
+            else
+            {
+                fileUploader.SaveAs(uploadsFolderPath + calculatedLocalFileName);
+                if (!System.IO.File.Exists(uploadsFolderPath + calculatedLocalFileName))
+                {
+                    return false;
+                }
+                DataProvider.Instance().AddNewFile(parentFolderId,
+                                calculatedOriginalFileName,
+                                fileUploader.PostedFile.ContentType,
+                                creatorUserId,
+                                calculatedLocalFileName);
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Writes file to response.
+        /// </summary>
+        public void DownloadFile(String path, String localFileName, String originalFileName,
+                                  String contentType, HttpResponse response)
+        {
+            if (!System.IO.File.Exists(path + localFileName))
+            {
+                return;
+            }
+            response.ClearContent();
+            response.ClearHeaders();
+            response.ContentType = contentType;
+            response.AddHeader("content-disposition",
+                               "attachment; filename=" + originalFileName);
+            //byte[] fileBytes;
+            //using (FileStream localFile = new FileStream(path + localFileName, FileMode.Open))
+            //{
+            //    long fileSize = localFile.Length;
+            //    fileBytes = new byte[(int)fileSize];
+            //    localFile.Read(fileBytes, 0, (int)localFile.Length);
+            //}
+            //response.BinaryWrite(fileBytes);
+            
+            response.WriteFile(path + localFileName);
+            response.End();
         }
     }
 }

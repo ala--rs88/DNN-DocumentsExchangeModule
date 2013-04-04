@@ -157,20 +157,25 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             multiView.SetActiveView(createFolderPage);
         }
 
-        
-
         protected void uploadButton_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrWhiteSpace(fileUploader.FileName))
             {
                 return;
             }
-            fileUploader.SaveAs(Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH) +
-                                    "uploaded_" +
-                                    Path.GetFileName(fileUploader.FileName));
-            DownloadFile(Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
-                                        "uploaded_" + Path.GetFileName(fileUploader.FileName),
-                                        fileUploader.PostedFile.ContentType);
+
+            List<int?> foldersTrace = ViewState[FOLDERS_TRACE] as List<int?>;
+            int? parentFolderId = (foldersTrace != null) ?
+                        foldersTrace[foldersTrace.Count - 1] :
+                        null;
+
+            (new DocumentsExchangeModuleController()).UploadNewFile(parentFolderId,
+                                    UserId,
+                                    fileUploader,
+                                    Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
+                                    Response);
+            UpdateNavigationControls(parentFolderId);
+            multiView.SetActiveView(filesPage);
         }
 
         protected void lstContent_SelectedIndexChanged(object sender, EventArgs e)
@@ -178,29 +183,7 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
 
         }
 
-        /// Downloads a file
-        /// 
-        /// Path to the directory
-        /// File Name of a document/file
-        /// Content Type of the downloadable file (e.g. application/pdf)
-        private void DownloadFile(String strPath, String strFileName, String strContentType)
-        {
-            if (!System.IO.File.Exists(strPath + strFileName))
-            {
-                return;
-            }
-            Response.ContentType = strContentType;
-            Response.AddHeader("content-disposition", "attachment; filename=" + strFileName);
-            byte[] getContent;
-            using (FileStream sourceFile = new FileStream(strPath + strFileName, FileMode.Open))
-            {
-                long fileSize = sourceFile.Length;
-                getContent = new byte[(int) fileSize];
-                sourceFile.Read(getContent, 0, (int) sourceFile.Length);
-            }
-
-            Response.BinaryWrite(getContent);
-        }
+        
 
         private void UpdateNavigationControls(int? parentFolderId)
         {
@@ -288,9 +271,12 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             if (!String.IsNullOrWhiteSpace(fileContentType) &&
                 !String.IsNullOrWhiteSpace(localFileName))
             {
-                DownloadFile(Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
+                (new DocumentsExchangeModuleController()).
+                        DownloadFile(Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
                              localFileName,
-                             fileContentType);
+                             localFileName,
+                             fileContentType,
+                             Response);
             }
         }
 

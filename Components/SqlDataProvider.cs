@@ -170,6 +170,18 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                         creatorUserId);
         }
 
+        public override void AddNewFile(int? parentFolderId, String originalName,
+                                String contentType, int creatorUserId, String localFileName)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                        GetFullyQualifiedName("DocumentsExchangeModule_AddNewFile"),
+                        parentFolderId,
+                        originalName,
+                        contentType,
+                        creatorUserId,
+                        localFileName);
+        }
+
         public override IDataReader GetDocumentsExchangeModules(int ModuleId)
         {
             return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetDocumentsExchangeModules"), ModuleId);
@@ -202,6 +214,5 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         {
             return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("GetDocumentsExchangeModulesByUser"), ModuleId, UserId);
         }
-
     }
 }
