@@ -54,6 +54,12 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
 
         #region "Abstract methods"
 
+        public abstract IDataReader GetFolders(int? parentFolderId);
+        public abstract IDataReader GetFiles(int? parentFolderId);
+
+        public abstract String GetFileContentType(int fileId);
+        public abstract String GetFileLastVersionLocalName(int fileId);
+
         public abstract IDataReader GetDocumentsExchangeModules(int ModuleId);
         public abstract IDataReader GetDocumentsExchangeModulesByUser(int ModuleId, int UserId);
         public abstract IDataReader GetDocumentsExchangeModule(int ModuleId, int ItemId);

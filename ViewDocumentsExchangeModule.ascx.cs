@@ -1,26 +1,7 @@
-// 
-// DotNetNuke® - http://www.dotnetnuke.com 
-// Copyright (c) 2002-2013 
-// by DotNetNuke Corporation 
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
-// documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
-// the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and 
-// to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
-// 
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions 
-// of the Software. 
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
-// TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
-// CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-// DEALINGS IN THE SOFTWARE. 
-// 
-
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -29,7 +10,7 @@ using DotNetNuke.Entities.Modules.Actions;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.Localization;
 using IgorKarpov.DocumentsExchangeModule.Components.Entities;
-//using File = System.IO.File;
+using IgorKarpov.DocumentsExchangeModule.Extensions;
 using File = IgorKarpov.DocumentsExchangeModule.Components.Entities.File;
 
 namespace IgorKarpov.Modules.DocumentsExchangeModule
@@ -46,6 +27,8 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
     /// ----------------------------------------------------------------------------- 
     partial class ViewDocumentsExchangeModule : PortalModuleBase, IActionable
     {
+        private const String FOLDERS_TRACE = "foldersTrace";
+        private const String UPLOADS_FOLDER_RELATIVE_PATH = "~/DesktopModules/IgorKarpov.DocumentsExchangeModule/Uploads/";
 
         #region "Event Handlers"
 
@@ -87,7 +70,11 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                 //lstFolders.DataSource = colDocumentsExchangeModules;
                 //lstFolders.DataBind();
 
-                UpdateNavigationListControls(null);
+                if (ViewState[FOLDERS_TRACE] == null)
+                {
+                    UpdateNavigationControls(null);
+                }
+
             }
 
             catch (Exception exc)
@@ -103,19 +90,26 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// ----------------------------------------------------------------------------- 
-        protected void lstFolders_ItemDataBound(object sender, System.Web.UI.WebControls.DataListItemEventArgs e)
+        protected void lstFolders_ItemDataBound(object sender, DataListItemEventArgs e)
         {
-            ((LinkButton)e.Item.FindControl("lbtnFolderName")).Text = ((Folder)e.Item.DataItem).Name;
-            ((Label)e.Item.FindControl("lblCreatedBy")).Text = ((Folder)e.Item.DataItem).CreatorUserId.ToString();
-            ((Label)e.Item.FindControl("lblCreationDate")).Text = ((Folder)e.Item.DataItem).CreationDate.ToString();
+            ((LinkButton)e.Item.FindControl("lbtnFolderName")).Text =
+                (((Folder)e.Item.DataItem).Name ?? String.Empty).Shorten();
+            ((Label)e.Item.FindControl("lblCreatedBy")).Text =
+                (((Folder)e.Item.DataItem).CreatorDisplayName ?? String.Empty).Shorten();
+            ((Label)e.Item.FindControl("lblCreationDate")).Text =
+                ((Folder)e.Item.DataItem).CreationDate.ToString();
         }
 
-        protected void lstFiles_ItemDataBound(object sender, System.Web.UI.WebControls.DataListItemEventArgs e)
+        protected void lstFiles_ItemDataBound(object sender, DataListItemEventArgs e)
         {
-            ((Label)e.Item.FindControl("lblOriginalName")).Text = ((File) e.Item.DataItem).OriginalName;
-            ((Label)e.Item.FindControl("lblCreationDate")).Text = ((File)e.Item.DataItem).CreationDate.ToString();
-            ((Label) e.Item.FindControl("lblCreatedBy")).Text = ((File) e.Item.DataItem).CreatorUserId.ToString();
-            ((Label)e.Item.FindControl("lblLastVersionDate")).Text = DateTime.Now.ToString();
+            ((LinkButton)e.Item.FindControl("lbtnFileName")).Text =
+                (((File) e.Item.DataItem).OriginalName ?? String.Empty).Shorten();
+            ((Label)e.Item.FindControl("lblCreationDate")).Text =
+                ((File)e.Item.DataItem).CreationDate.ToString();
+            ((Label)e.Item.FindControl("lblCreatedBy")).Text =
+                (((File)e.Item.DataItem).CreatorDisplayName ?? String.Empty).Shorten();
+            ((Label) e.Item.FindControl("lblLastVersionDate")).Text =
+                ((File) e.Item.DataItem).LastVersionDate.ToString();
         }
 
         #endregion
@@ -147,15 +141,22 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         #endregion
 
 
-        protected void showUploadPageButton_Click(object sender, EventArgs e)
+        protected void lbtnShowUploadPage_Click(object sender, EventArgs e)
         {
             multiView.SetActiveView(uploadFilePage);
         }
 
-        protected void showFilesPageButton_Click(object sender, EventArgs e)
+        protected void lbtnShowFilesPage_Click(object sender, EventArgs e)
         {
             multiView.SetActiveView(filesPage);
         }
+
+        protected void lbtnShowCreateFolder_Click(object sender, EventArgs e)
+        {
+            multiView.SetActiveView(createFolderPage);
+        }
+
+        
 
         protected void uploadButton_Click(object sender, EventArgs e)
         {
@@ -163,10 +164,10 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             {
                 return;
             }
-            fileUploader.SaveAs(Server.MapPath("~/DesktopModules/IgorKarpov.DocumentsExchangeModule/Uploads/") +
+            fileUploader.SaveAs(Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH) +
                                     "uploaded_" +
                                     Path.GetFileName(fileUploader.FileName));
-            DownloadFile(Server.MapPath("~/DesktopModules/IgorKarpov.DocumentsExchangeModule/Uploads/"),
+            DownloadFile(Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
                                         "uploaded_" + Path.GetFileName(fileUploader.FileName),
                                         fileUploader.PostedFile.ContentType);
         }
@@ -183,68 +184,121 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         /// Content Type of the downloadable file (e.g. application/pdf)
         private void DownloadFile(String strPath, String strFileName, String strContentType)
         {
-            if (System.IO.File.Exists(strPath + strFileName))
+            if (!System.IO.File.Exists(strPath + strFileName))
             {
-                Response.ContentType = strContentType;
-                Response.AddHeader("content-disposition", "attachment; filename=" + strFileName);
-                byte[] getContent;
-                using (FileStream sourceFile = new FileStream(strPath + strFileName, FileMode.Open))
-                {
-                    long FileSize;
-                    FileSize = sourceFile.Length;
-                    getContent = new byte[(int) FileSize];
-                    sourceFile.Read(getContent, 0, (int) sourceFile.Length);
-                }
-
-                Response.BinaryWrite(getContent);
+                return;
             }
+            Response.ContentType = strContentType;
+            Response.AddHeader("content-disposition", "attachment; filename=" + strFileName);
+            byte[] getContent;
+            using (FileStream sourceFile = new FileStream(strPath + strFileName, FileMode.Open))
+            {
+                long fileSize = sourceFile.Length;
+                getContent = new byte[(int) fileSize];
+                sourceFile.Read(getContent, 0, (int) sourceFile.Length);
+            }
+
+            Response.BinaryWrite(getContent);
         }
 
-        private void UpdateNavigationListControls(int? parentFolderId)
+        private void UpdateNavigationControls(int? parentFolderId)
         {
-            List<Folder> folders = new List<Folder>
-                    {
-                        new Folder
-                            {
-                                Id = 1,
-                                Name = "Name1",
-                                CreatorUserId = 1,
-                                CreationDate = DateTime.Now,
-                            },
-                        new Folder
-                            {
-                                Id = 2,
-                                Name = "Name2",
-                                CreatorUserId = 1,
-                                CreationDate = DateTime.Now,
-                            }
-                    };
-            List<File> files = new List<File>
-                    {
-                        new File
-                            {
-                                OriginalName = "File1",
-                                CreationDate = DateTime.Now
-                            },
-                        new File
-                            {
-                                OriginalName = "File2",
-                                CreationDate = DateTime.Now
-                            }
-                    };
-            lstFolders.DataSource = folders;
+            if (parentFolderId.HasValue && parentFolderId.Value < 1)
+            {
+                parentFolderId = null;
+            }
+
+            DocumentsExchangeModuleController moduleController =
+                new DocumentsExchangeModuleController();
+
+
+            lstFolders.DataSource = moduleController.GetFolders(parentFolderId);
             lstFolders.DataBind();
 
-            lstFiles.DataSource = files;
+            lstFiles.DataSource = moduleController.GetFiles(parentFolderId);
             lstFiles.DataBind();
+
+            List<int?> foldersTrace = ViewState[FOLDERS_TRACE] as List<int?> ??
+                            new List<int?>();
+
+
+            if (!foldersTrace.Contains(parentFolderId))
+            {
+                foldersTrace.Add(parentFolderId);
+            }
+            else
+            {
+                if (foldersTrace.IndexOf(parentFolderId) < foldersTrace.Count - 1)
+                {
+                    foldersTrace.RemoveRange(foldersTrace.IndexOf(parentFolderId) + 1,
+                        foldersTrace.Count - 1 - foldersTrace.IndexOf(parentFolderId));
+                }
+            }
+
+            ViewState[FOLDERS_TRACE] = foldersTrace;
+
+            StringBuilder foldersTraceString = new StringBuilder();
+            foreach (var folderId in foldersTrace)
+            {
+                foldersTraceString.Append(folderId.HasValue
+                                              ? String.Format(">{0}", folderId.Value)
+                                              : String.Format("{0}", "ROOT"));
+            }
+            lblFoldersTrace.Text = foldersTraceString.ToString();
+
+            UpdateUpButtonVisibility();
         }
 
         protected void lbtnFolderName_Click(object sender, EventArgs e)
         {
-            LinkButton clickedButton = ((LinkButton)sender);
-            clickedButton.Text = lstFolders.DataKeys[((DataListItem)clickedButton.NamingContainer).ItemIndex].ToString();
+            UpdateNavigationControls(int.Parse(lstFolders.
+                                                DataKeys[
+                                                    ((DataListItem)((LinkButton)sender).
+                                                            NamingContainer).ItemIndex]
+                                                .ToString()));
         }
 
+        protected void lbtnFileName_Click(object sender, EventArgs e)
+        {
+            int fileId = int.Parse(lstFiles.
+                                    DataKeys[
+                                        ((DataListItem)((LinkButton)sender).
+                                                NamingContainer).ItemIndex]
+                                    .ToString());
+            DocumentsExchangeModuleController moduleController =
+                new DocumentsExchangeModuleController();
+            String fileContentType = moduleController.GetFileContentType(fileId);
+            String localFileName = moduleController.GetFileLastVersionLocalName(fileId);
+            if (!String.IsNullOrWhiteSpace(fileContentType) &&
+                !String.IsNullOrWhiteSpace(localFileName))
+            {
+                DownloadFile(Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
+                             localFileName,
+                             fileContentType);
+            }
+        }
+
+        protected void lbtnUp_Click(object sender, EventArgs e)
+        {
+            List<int?> foldersTrace = ViewState[FOLDERS_TRACE] as List<int?>;
+            if (foldersTrace != null && foldersTrace.Count >= 1)
+            {
+                UpdateNavigationControls(foldersTrace[foldersTrace.Count - 2]);
+            }
+        }
+
+        private void UpdateUpButtonVisibility()
+        {
+            List<int?> foldersTrace = ViewState[FOLDERS_TRACE] as List<int?>;
+            if (foldersTrace != null && foldersTrace.Count < 2)
+            {
+                tblUp.Visible = false;
+            }
+            else
+            {
+                tblUp.Visible = true;
+            }
+        }
     }
 
 }

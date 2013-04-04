@@ -31,6 +31,33 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule {
         protected global::System.Web.UI.WebControls.View filesPage;
         
         /// <summary>
+        /// lblFoldersTrace control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFoldersTrace;
+        
+        /// <summary>
+        /// tblUp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Table tblUp;
+        
+        /// <summary>
+        /// lbtnUp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnUp;
+        
+        /// <summary>
         /// lstFolders control.
         /// </summary>
         /// <remarks>
@@ -49,13 +76,22 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule {
         protected global::System.Web.UI.WebControls.DataList lstFiles;
         
         /// <summary>
-        /// showUploadPageButton control.
+        /// lbtnShowUploadPage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button showUploadPageButton;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowUploadPage;
+        
+        /// <summary>
+        /// lbtnShowCreateFolder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowCreateFolder;
         
         /// <summary>
         /// uploadFilePage control.
@@ -94,12 +130,21 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule {
         protected global::System.Web.UI.WebControls.Panel Panel1;
         
         /// <summary>
-        /// showFilesPageButton control.
+        /// lbtnShowFilesPage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button showFilesPageButton;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowFilesPage;
+        
+        /// <summary>
+        /// createFolderPage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View createFolderPage;
     }
 }

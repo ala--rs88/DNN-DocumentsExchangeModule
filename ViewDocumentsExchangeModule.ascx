@@ -8,13 +8,26 @@
     <asp:View ID="filesPage" runat="server">
         <table cellpadding="4" style="width: 100%; height: 45px; background: lightgray;">
             <tr>
-                <th width="30%" style="vertical-align: middle;">Content</th>
-                <th width="20%" style="vertical-align: middle;">Created By</th>
+                <th width="30%" style="vertical-align: middle;">Title</th>
+                <th width="20%" style="vertical-align: middle;">Author</th>
                 <th width="20%" style="vertical-align: middle;">Creation Date</th>
                 <th width="20%" style="vertical-align: middle;">Last Version Date</th>
                 <th width="10%" style="vertical-align: middle;">Actions</th>
             </tr>
         </table>
+        
+        <div style="margin: 8px 10px 4px 6px;">
+            <asp:Label ID="lblFoldersTrace"  runat="server"></asp:Label>
+        </div>
+        
+        <asp:Table ID="tblUp" BackColor="White" runat="server" cellpadding="4"
+            style="border-style: solid; border-color: inherit; border-width: 1px; width: 99%; height: 35px; margin: 8px 0 4px 4px;">
+            <asp:TableRow>
+                <asp:TableCell>
+                    <asp:LinkButton ID="lbtnUp" Text="..." runat="server" OnClick="lbtnUp_Click" />
+                </asp:TableCell>
+            </asp:TableRow>
+        </asp:Table>
 
         <asp:DataList ID="lstFolders" DataKeyField="Id" runat="server" CellPadding="4"
             OnItemDataBound="lstFolders_ItemDataBound" BackColor="White" Width="100%">
@@ -24,7 +37,7 @@
                         <td valign="top" width="30%" align="left">
                             <asp:LinkButton ID="lbtnFolderName" runat="server" Text="Name" CssClass="Normal" OnClick="lbtnFolderName_Click" />
                         </td>
-                        <td valign="top" width="20%" align="left">
+                        <td valign="top" width="20%" align="center">
                             <asp:Label ID="lblCreatedBy" runat="server" Text="Created By"></asp:Label>
                         </td>
                         <td valign="top" width="20%" align="center">
@@ -52,10 +65,9 @@
                 <table cellpadding="4" style="border-style: solid; border-color: inherit; border-width: 1px; width: 100%; height: 25px;">
                     <tr>
                         <td valign="top" width="30%" align="left">
-
-                            <asp:Label ID="lblOriginalName" runat="server" Text="Original Name" CssClass="Normal" />
+                            <asp:LinkButton ID="lbtnFileName" runat="server" Text="Original Name" CssClass="Normal" OnClick="lbtnFileName_Click" />
                         </td>
-                        <td valign="top" width="20%" align="left">
+                        <td valign="top" width="20%" align="center">
                             <asp:Label ID="lblCreatedBy" runat="server" Text="Created By"></asp:Label>
                         </td>
                         <td valign="top" width="20%" align="center">
@@ -80,17 +92,25 @@
         </asp:DataList>
 
 
-
-        <asp:Button ID="showUploadPageButton" runat="server" OnClick="showUploadPageButton_Click" Text="Upload file" />
+        <div>
+            <asp:LinkButton ID="lbtnShowUploadPage" runat="server" OnClick="lbtnShowUploadPage_Click" Text="Upload new file" />
+             <asp:LinkButton ID="lbtnShowCreateFolder" runat="server" OnClick="lbtnShowCreateFolder_Click" Text="Create folder" />
+        </div>
+        
     </asp:View>
 
     <asp:View ID="uploadFilePage" runat="server">
         <asp:FileUpload ID="fileUploader" runat="server" />
         <asp:Button ID="uploadButton" runat="server" CssClass="myButton" Text="Upload" OnClick="uploadButton_Click" />
         <asp:Panel ID="Panel1" runat="server">
-            <asp:Button ID="showFilesPageButton" runat="server" OnClick="showFilesPageButton_Click" Text="Back" />
+            <asp:LinkButton ID="lbtnShowFilesPage" runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
         </asp:Panel>
     </asp:View>
+    
+    <asp:View ID="createFolderPage" runat="server">
+        <asp:LinkButton runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
+    </asp:View>
+
 </asp:MultiView>
 
 <p>

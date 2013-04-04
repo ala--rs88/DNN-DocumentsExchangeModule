@@ -13,7 +13,7 @@ namespace IgorKarpov.DocumentsExchangeModule.Components.Entities
             set;
         }
 
-        public int? ParentFolderId
+        public int ParentFolderId
         {
             get;
             set;
@@ -26,6 +26,12 @@ namespace IgorKarpov.DocumentsExchangeModule.Components.Entities
         }
 
         public int CreatorUserId
+        {
+            get;
+            set;
+        }
+
+        public String CreatorDisplayName
         {
             get;
             set;

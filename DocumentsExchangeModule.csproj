@@ -83,6 +83,7 @@
     <Compile Include="EditDocumentsExchangeModule.ascx.designer.cs">
       <DependentUpon>EditDocumentsExchangeModule.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.ascx.cs">
       <DependentUpon>Settings.ascx</DependentUpon>

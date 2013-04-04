@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Framework.Providers;
 using Microsoft.ApplicationBlocks.Data;
@@ -109,6 +110,32 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         #endregion
 
         #region "Public Methods"
+
+        public override IDataReader GetFolders(int? parentFolderId)
+        {
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("DocumentsExchangeModule_GetFolders"), parentFolderId);
+        }
+
+        public override IDataReader GetFiles(int? parentFolderId)
+        {
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("DocumentsExchangeModule_GetFiles"), parentFolderId);
+        }
+
+        public override String GetFileContentType(int fileId)
+        {
+            String command = String.Format("select {0} ({1})",
+                            GetFullyQualifiedName("DocumentsExchangeModule_GetFileContentType"),
+                            fileId);
+            return (String)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
+        }
+
+        public override String GetFileLastVersionLocalName(int fileId)
+        {
+            String command = String.Format("select {0} ({1})",
+                            GetFullyQualifiedName("DocumentsExchangeModule_GetFileLastVersionLocalName"),
+                            fileId);
+            return (String)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
+        }
 
         public override IDataReader GetDocumentsExchangeModules(int ModuleId)
         {

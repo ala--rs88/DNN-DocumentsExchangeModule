@@ -13,7 +13,7 @@ namespace IgorKarpov.DocumentsExchangeModule.Components.Entities
             set;
         }
 
-        public int? ParentFolderId
+        public int ParentFolderId
         {
             get;
             set;
@@ -37,7 +37,19 @@ namespace IgorKarpov.DocumentsExchangeModule.Components.Entities
             set;
         }
 
+        public String CreatorDisplayName
+        {
+            get;
+            set;
+        }
+
         public DateTime CreationDate
+        {
+            get;
+            set;
+        }
+
+        public int LastVersionId
         {
             get;
             set;

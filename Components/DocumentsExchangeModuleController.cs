@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Services.Search;
+using IgorKarpov.DocumentsExchangeModule.Components.Entities;
 
 namespace IgorKarpov.Modules.DocumentsExchangeModule
 { 
@@ -12,6 +14,20 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
     {
 
         #region "Public Methods"
+
+
+        public List<Folder> GetFolders(int? parentFolderId)
+        {
+            var reader = DataProvider.Instance().
+                                      GetFolders(parentFolderId);
+            return CBO.FillCollection<Folder>(reader);
+        }
+
+        public List<File> GetFiles(int? parentFolderId)
+        {
+            return CBO.FillCollection<File>(DataProvider.Instance().
+                                GetFiles(parentFolderId));
+        }
 
         /// ----------------------------------------------------------------------------- 
         /// <summary> 
@@ -139,5 +155,15 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
 
         #endregion
 
+
+        internal String GetFileContentType(int fileId)
+        {
+            return DataProvider.Instance().GetFileContentType(fileId);
+        }
+
+        internal String GetFileLastVersionLocalName(int fileId)
+        {
+            return DataProvider.Instance().GetFileLastVersionLocalName(fileId);
+        }
     }
 }
