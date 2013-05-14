@@ -274,6 +274,11 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             {
                 return false;
             }
+            String contentType = DataProvider.Instance().GetFileContentType(currentFileId);
+            if (!contentType.Equals(versionUploader.PostedFile.ContentType))
+            {
+                return false;
+            }
             String calculatedLocalFileName = CalculateLocalFileName(uploadsFolderPath,
                                                                     Path.GetExtension(versionUploader.FileName));
             if (String.IsNullOrWhiteSpace(calculatedLocalFileName))
@@ -327,5 +332,24 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             response.End();
         }
 
+        public void DeleteFolder(int folderId)
+        {
+            DataProvider.Instance().DeleteFolder(folderId);
+        }
+
+        public void DeleteFile(int fileId)
+        {
+            DataProvider.Instance().DeleteFile(fileId);
+        }
+
+        public bool DeleteVersion(int versionId)
+        {
+            if (DataProvider.Instance().GetRelatedVersionsCount(versionId) < 2)
+            {
+                return false;
+            }
+            DataProvider.Instance().DeleteVersion(versionId);
+            return true;
+        }
     }
 }

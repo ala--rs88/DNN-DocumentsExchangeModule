@@ -158,6 +158,14 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             return (String)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
         }
 
+        public override int GetRelatedVersionsCount(int versionId)
+        {
+            String command = String.Format("select {0} ({1})",
+                            GetFullyQualifiedName("DocumentsExchangeModule_GetRelatedVersionsCount"),
+                            versionId);
+            return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
+        }
+
         public override bool IsOriginalFileNameLocallyAvailable(int? parentFolderId, String targetaName)
         {
             String parentFolderIdString = parentFolderId.HasValue
@@ -211,6 +219,27 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                         calculatedLocalFileName,
                         versionComment,
                         creatorUserId);
+        }
+
+        public override void DeleteFolder(int folderId)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                        GetFullyQualifiedName("DocumentsExchangeModule_HideFolder"),
+                        folderId);
+        }
+
+        public override void DeleteFile(int fileId)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                        GetFullyQualifiedName("DocumentsExchangeModule_HideFile"),
+                        fileId);
+        }
+
+        public override void DeleteVersion(int versionId)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                        GetFullyQualifiedName("DocumentsExchangeModule_HideVersion"),
+                        versionId);
         }
 
         public override IDataReader GetDocumentsExchangeModules(int ModuleId)

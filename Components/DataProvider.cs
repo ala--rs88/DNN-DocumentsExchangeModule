@@ -62,12 +62,17 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         public abstract String GetOriginalFileName(int fileId);
         public abstract String GetFileLastVersionLocalName(int fileId);
         public abstract String GetVersionLocalName(int versionId);
+        public abstract int GetRelatedVersionsCount(int versionId);
 
         public abstract bool IsOriginalFileNameLocallyAvailable(int? parentFolderId, String targetName);
         public abstract bool IsFolderNameLocallyAvailable(int? parentFolderId, String targetName);
         public abstract void AddFolder(int? parentFolderId, String name, int creatorUserId);
         public abstract void AddNewFile(int? parentFolderId, String originalName, String contentType, int creatorUserId, String localFileName);
         public abstract void AddVersion(int currentFileId, String calculatedLocalFileName, String versionComment, int creatorUserId);
+
+        public abstract void DeleteFolder(int folderId);
+        public abstract void DeleteFile(int fileId);
+        public abstract void DeleteVersion(int versionId);
 
         public abstract IDataReader GetDocumentsExchangeModules(int ModuleId);
         public abstract IDataReader GetDocumentsExchangeModulesByUser(int ModuleId, int UserId);
@@ -77,6 +82,5 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         public abstract void DeleteDocumentsExchangeModule(int ModuleId, int ItemId);
 
         #endregion
-
     }
 }

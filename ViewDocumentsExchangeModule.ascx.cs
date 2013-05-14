@@ -240,7 +240,8 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
 
             DocumentsExchangeModuleController moduleController =
                 new DocumentsExchangeModuleController();
-
+            String currentFileName = moduleController.GetOriginalFileName(fileId);
+            lblCurrentFileDescription.Text = String.Format("Versions of file \"{0}\":", currentFileName);
             lstVersions.DataSource = moduleController.GetVersions(fileId);
             lstVersions.DataBind();
             multiView.SetActiveView(versionsPage);
@@ -386,6 +387,51 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                              fileContentType,
                              Response);
             }
+        }
+
+        protected void btnDeleteFolder_Click(object sender, EventArgs e)
+        {
+            int folderId = int.Parse(lstFolders.
+                                    DataKeys[
+                                        ((DataListItem)((Control)sender).
+                                                NamingContainer).ItemIndex]
+                                    .ToString());
+            (new DocumentsExchangeModuleController()).DeleteFolder(folderId);
+            List<int?> foldersTrace = ViewState[FOLDERS_TRACE] as List<int?>;
+            int? parentFolderId = (foldersTrace != null) ?
+                        foldersTrace[foldersTrace.Count - 1] :
+                        null;
+            UpdateNavigationControls(parentFolderId);
+        }
+
+        protected void btnDeleteFile_Click(object sender, EventArgs e)
+        {
+            int fileId = int.Parse(lstFiles.
+                                    DataKeys[
+                                        ((DataListItem)((Control)sender).
+                                                NamingContainer).ItemIndex]
+                                    .ToString());
+            (new DocumentsExchangeModuleController()).DeleteFile(fileId);
+            List<int?> foldersTrace = ViewState[FOLDERS_TRACE] as List<int?>;
+            int? parentFolderId = (foldersTrace != null) ?
+                        foldersTrace[foldersTrace.Count - 1] :
+                        null;
+            UpdateNavigationControls(parentFolderId);
+        }
+
+        protected void btnDeleteVersion_Click(object sender, EventArgs e)
+        {
+            int versionId = int.Parse(lstVersions.
+                                    DataKeys[
+                                        ((DataListItem)((Control)sender).
+                                                NamingContainer).ItemIndex]
+                                    .ToString());
+            if (!(new DocumentsExchangeModuleController()).DeleteVersion(versionId))
+            {
+                return;
+            }
+            int currentFileId = int.Parse((String)ViewState[CURRENT_FILE_ID]);
+            ShowFileVersions(currentFileId);
         }
     }
 

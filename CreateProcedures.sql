@@ -171,3 +171,48 @@ BEGIN
 	)
 END
 GO
+
+--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_HideFolder]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].[IgorKarpov_DocumentsExchangeModule_HideFolder]
+GO
+create procedure [dbo].[IgorKarpov_DocumentsExchangeModule_HideFolder]
+	@folderId int
+as
+BEGIN
+	UPDATE [dbo].[IgorKarpov_DocumentsExchangeModule_Folders] 
+		SET ParentFolderId = -1
+		WHERE Id = @folderId
+END
+GO
+
+--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_HideFile]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].[IgorKarpov_DocumentsExchangeModule_HideFile]
+GO
+create procedure [dbo].[IgorKarpov_DocumentsExchangeModule_HideFile]
+	@fileId int
+as
+BEGIN
+	UPDATE [dbo].[IgorKarpov_DocumentsExchangeModule_Files] 
+		SET ParentFolderId = -1
+		WHERE Id = @fileId
+END
+GO
+
+--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_HideVersion]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].[IgorKarpov_DocumentsExchangeModule_HideVersion]
+GO
+create procedure [dbo].[IgorKarpov_DocumentsExchangeModule_HideVersion]
+	@versionId int
+as
+BEGIN
+	UPDATE [dbo].[IgorKarpov_DocumentsExchangeModule_FileVersions] 
+		SET FileId = -1
+		WHERE Id = @versionId
+END
+GO

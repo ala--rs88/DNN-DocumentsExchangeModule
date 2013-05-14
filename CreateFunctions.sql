@@ -43,7 +43,7 @@ BEGIN
 declare @localName nvarchar(50)
 SELECT TOP (1) @localName = [LocalName] 
 	FROM [dbo].[IgorKarpov_DocumentsExchangeModule_FileVersions]
-	WHERE [FileId] = @fileId
+	WHERE [FileId] = @fileId AND
 	ORDER BY [CreationDate] DESC
 RETURN @localName
 END
@@ -127,6 +127,7 @@ RETURN @isAvailable
 END
 GO
 
+--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_IsFolderNameLocallyAvailable]') and OBJECTPROPERTY(id, N'IsFunction') = 1)
     DROP FUNCTION [dbo].[IgorKarpov_DocumentsExchangeModule_IsFolderNameLocallyAvailable];
@@ -148,5 +149,28 @@ IF @matchesCount > 0
 ELSE
 	set @isAvailable = 1
 RETURN @isAvailable
+END
+GO
+
+--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_GetRelatedVersionsCount]') and OBJECTPROPERTY(id, N'IsFunction') = 1)
+    DROP FUNCTION [dbo].[IgorKarpov_DocumentsExchangeModule_GetRelatedVersionsCount];
+GO
+CREATE FUNCTION [dbo].[IgorKarpov_DocumentsExchangeModule_GetRelatedVersionsCount] (@versionId int)
+RETURNS int
+AS
+BEGIN
+	declare @versionsCount int
+	declare @fileId int
+
+	SELECT @fileId = FileId
+		FROM [dbo].[IgorKarpov_DocumentsExchangeModule_FileVersions]
+		WHERE [Id] = @versionId
+
+	SELECT @versionsCount = count(*) 
+		FROM [dbo].[IgorKarpov_DocumentsExchangeModule_FileVersions]
+		WHERE [FileId] = @fileId
+	RETURN @versionsCount
 END
 GO
