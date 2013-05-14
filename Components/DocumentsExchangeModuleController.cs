@@ -33,6 +33,12 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                                 GetFiles(parentFolderId));
         }
 
+        public List<FileVersion> GetVersions(int fileId)
+        {
+            return CBO.FillCollection<FileVersion>(DataProvider.Instance().
+                                GetVersions(fileId));
+        }
+
         /// ----------------------------------------------------------------------------- 
         /// <summary> 
         /// gets an object from the database 
@@ -165,9 +171,19 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             return DataProvider.Instance().GetFileContentType(fileId);
         }
 
+        internal string GetOriginalFileName(int fileId)
+        {
+            return DataProvider.Instance().GetOriginalFileName(fileId);
+        }
+
         internal String GetFileLastVersionLocalName(int fileId)
         {
             return DataProvider.Instance().GetFileLastVersionLocalName(fileId);
+        }
+
+        internal String GetVersionLocalName(int versionId)
+        {
+            return DataProvider.Instance().GetVersionLocalName(versionId);
         }
 
         private bool IsOriginalFileNameLocallyAvailable(int? parentFolderId, String targetName)
@@ -218,8 +234,7 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         internal bool UploadNewFile(int? parentFolderId,
                                  int creatorUserId,
                                  FileUpload fileUploader,
-                                 String uploadsFolderPath,
-                                 HttpResponse response)
+                                 String uploadsFolderPath)
         {
             if (!Directory.Exists(uploadsFolderPath))
             {
@@ -233,34 +248,63 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                 return false;
             }
 
-            String calculatedLocalFileName = Guid.NewGuid().ToString() +
-                                    Path.GetExtension(fileUploader.FileName);
-            int i = 0;
-            while (System.IO.File.Exists(uploadsFolderPath + calculatedLocalFileName) &&
-                   i < 10)
-            {
-                calculatedLocalFileName = Guid.NewGuid().ToString() +
-                                    Path.GetExtension(fileUploader.FileName);
-                i++;
-            }
-            if (i >= 10)
+            String calculatedLocalFileName = CalculateLocalFileName(uploadsFolderPath,
+                                                                    Path.GetExtension(fileUploader.FileName));
+            if (String.IsNullOrWhiteSpace(calculatedLocalFileName))
             {
                 return false;
             }
-            else
+            fileUploader.SaveAs(uploadsFolderPath + calculatedLocalFileName);
+            if (!System.IO.File.Exists(uploadsFolderPath + calculatedLocalFileName))
             {
-                fileUploader.SaveAs(uploadsFolderPath + calculatedLocalFileName);
-                if (!System.IO.File.Exists(uploadsFolderPath + calculatedLocalFileName))
-                {
-                    return false;
-                }
-                DataProvider.Instance().AddNewFile(parentFolderId,
-                                calculatedOriginalFileName,
-                                fileUploader.PostedFile.ContentType,
-                                creatorUserId,
-                                calculatedLocalFileName);
-                return true;
+                return false;
             }
+            DataProvider.Instance().AddNewFile(parentFolderId,
+                                               calculatedOriginalFileName,
+                                               fileUploader.PostedFile.ContentType,
+                                               creatorUserId,
+                                               calculatedLocalFileName);
+            return true;
+        }
+
+        internal bool UploadVersion(int currentFileId, FileUpload versionUploader, String uploadsFolderPath,
+                                    String versionComment, int creatorUserId)
+        {
+            if (!Directory.Exists(uploadsFolderPath))
+            {
+                return false;
+            }
+            String calculatedLocalFileName = CalculateLocalFileName(uploadsFolderPath,
+                                                                    Path.GetExtension(versionUploader.FileName));
+            if (String.IsNullOrWhiteSpace(calculatedLocalFileName))
+            {
+                return false;
+            }
+            versionUploader.SaveAs(uploadsFolderPath + calculatedLocalFileName);
+            if (!System.IO.File.Exists(uploadsFolderPath + calculatedLocalFileName))
+            {
+                return false;
+            }
+            DataProvider.Instance().AddVersion(currentFileId,
+                                               calculatedLocalFileName,
+                                               versionComment,
+                                               creatorUserId);
+            return true;
+        }
+
+        private String CalculateLocalFileName(String targetPath, String fileExtension)
+        {
+            String calculatedLocalFileName = Guid.NewGuid().ToString() + fileExtension;
+            int i = 0;
+            while (System.IO.File.Exists(targetPath + calculatedLocalFileName) &&
+                   i < 10)
+            {
+                calculatedLocalFileName = Guid.NewGuid().ToString() + fileExtension;
+                i++;
+            }
+            return i >= 10
+                ? String.Empty
+                : calculatedLocalFileName;
         }
 
         /// <summary>
@@ -278,17 +322,10 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             response.ContentType = contentType;
             response.AddHeader("content-disposition",
                                "attachment; filename=" + originalFileName);
-            //byte[] fileBytes;
-            //using (FileStream localFile = new FileStream(path + localFileName, FileMode.Open))
-            //{
-            //    long fileSize = localFile.Length;
-            //    fileBytes = new byte[(int)fileSize];
-            //    localFile.Read(fileBytes, 0, (int)localFile.Length);
-            //}
-            //response.BinaryWrite(fileBytes);
-            
+
             response.WriteFile(path + localFileName);
             response.End();
         }
+
     }
 }

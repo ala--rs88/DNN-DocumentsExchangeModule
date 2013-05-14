@@ -19,6 +19,12 @@ namespace IgorKarpov.DocumentsExchangeModule.Components.Entities
             set;
         }
 
+        public String Comment
+        {
+            get;
+            set;
+        }
+
         public String LocalName
         {
             get;
@@ -26,6 +32,12 @@ namespace IgorKarpov.DocumentsExchangeModule.Components.Entities
         }
 
         public int CreatorUserId
+        {
+            get;
+            set;
+        }
+
+        public String CreatorDisplayName
         {
             get;
             set;

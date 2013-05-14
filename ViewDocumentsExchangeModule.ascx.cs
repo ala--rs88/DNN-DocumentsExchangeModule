@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Web;
@@ -27,8 +28,9 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
     /// ----------------------------------------------------------------------------- 
     partial class ViewDocumentsExchangeModule : PortalModuleBase, IActionable
     {
-        private const String FOLDERS_TRACE = "foldersTrace";
-        private const String UPLOADS_FOLDER_RELATIVE_PATH = "~/DesktopModules/IgorKarpov.DocumentsExchangeModule/Uploads/";
+        private readonly String FOLDERS_TRACE = "foldersTrace";
+        private readonly String UPLOADS_FOLDER_RELATIVE_PATH = "~/DesktopModules/IgorKarpov.DocumentsExchangeModule/Uploads/";
+        private readonly String CURRENT_FILE_ID = "fileId";
 
         #region "Event Handlers"
 
@@ -46,11 +48,11 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             }
             try
             {
-                DocumentsExchangeModuleController moduleController = new DocumentsExchangeModuleController();
+                //DocumentsExchangeModuleController moduleController = new DocumentsExchangeModuleController();
 
                 // get the content from the DocumentsExchangeModule table 
-                List<DocumentsExchangeModuleInfo> colDocumentsExchangeModules =
-                        moduleController.GetDocumentsExchangeModulesByUser(ModuleId, UserInfo.UserID);
+                //List<DocumentsExchangeModuleInfo> colDocumentsExchangeModules =
+                //        moduleController.GetDocumentsExchangeModulesByUser(ModuleId, UserInfo.UserID);
 
                 //if (colDocumentsExchangeModules.Count == 0)
                 //{
@@ -97,19 +99,31 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             ((Label)e.Item.FindControl("lblCreatedBy")).Text =
                 (((Folder)e.Item.DataItem).CreatorDisplayName ?? String.Empty).Shorten();
             ((Label)e.Item.FindControl("lblCreationDate")).Text =
-                ((Folder)e.Item.DataItem).CreationDate.ToString();
+                ((Folder)e.Item.DataItem).CreationDate.ToString(CultureInfo.InvariantCulture);
         }
 
         protected void lstFiles_ItemDataBound(object sender, DataListItemEventArgs e)
         {
             ((LinkButton)e.Item.FindControl("lbtnFileName")).Text =
-                (((File) e.Item.DataItem).OriginalName ?? String.Empty).Shorten();
+                (((File)e.Item.DataItem).OriginalName ?? String.Empty).Shorten();
             ((Label)e.Item.FindControl("lblCreationDate")).Text =
-                ((File)e.Item.DataItem).CreationDate.ToString();
+                ((File)e.Item.DataItem).CreationDate.ToString(CultureInfo.InvariantCulture);
             ((Label)e.Item.FindControl("lblCreatedBy")).Text =
                 (((File)e.Item.DataItem).CreatorDisplayName ?? String.Empty).Shorten();
-            ((Label) e.Item.FindControl("lblLastVersionDate")).Text =
-                ((File) e.Item.DataItem).LastVersionDate.ToString();
+            ((Label)e.Item.FindControl("lblLastVersionDate")).Text =
+                ((File)e.Item.DataItem).LastVersionDate.ToString(CultureInfo.InvariantCulture);
+        }
+
+        protected void lstVersions_ItemDataBound(object sender, DataListItemEventArgs e)
+        {
+            ((Label)e.Item.FindControl("lblId")).Text =
+                ((FileVersion)e.Item.DataItem).Id.ToString(CultureInfo.InvariantCulture);
+            ((LinkButton)e.Item.FindControl("lbtnVersionComment")).Text =
+                (((FileVersion)e.Item.DataItem).Comment ?? String.Empty).Shorten();
+            ((Label)e.Item.FindControl("lblCreationDate")).Text =
+                ((FileVersion)e.Item.DataItem).CreationDate.ToString(CultureInfo.InvariantCulture);
+            ((Label)e.Item.FindControl("lblCreatedBy")).Text =
+                    (((FileVersion)e.Item.DataItem).CreatorDisplayName ?? String.Empty).Shorten();
         }
 
         #endregion
@@ -146,8 +160,29 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             multiView.SetActiveView(uploadFilePage);
         }
 
+        protected void lbtnShowUploadVersionPage_Click(object sender, EventArgs e)
+        {
+            multiView.SetActiveView(uploadVersionPage);
+        }
+
+        protected void btnShowVersionsPage_Click(object sender, EventArgs e)
+        {
+            int currentFileId = int.Parse(lstFiles.
+                                    DataKeys[
+                                        ((DataListItem)((Control)sender).
+                                                NamingContainer).ItemIndex]
+                                    .ToString());
+            ViewState[CURRENT_FILE_ID] = currentFileId.ToString(CultureInfo.InvariantCulture);
+            ShowFileVersions(currentFileId);
+        }
+
         protected void lbtnShowFilesPage_Click(object sender, EventArgs e)
         {
+            List<int?> foldersTrace = ViewState[FOLDERS_TRACE] as List<int?>;
+            int? parentFolderId = (foldersTrace != null) ?
+                        foldersTrace[foldersTrace.Count - 1] :
+                        null;
+            UpdateNavigationControls(parentFolderId);
             multiView.SetActiveView(filesPage);
         }
 
@@ -163,19 +198,31 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             {
                 return;
             }
-
             List<int?> foldersTrace = ViewState[FOLDERS_TRACE] as List<int?>;
             int? parentFolderId = (foldersTrace != null) ?
                         foldersTrace[foldersTrace.Count - 1] :
                         null;
-
             (new DocumentsExchangeModuleController()).UploadNewFile(parentFolderId,
                                     UserId,
                                     fileUploader,
-                                    Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
-                                    Response);
+                                    Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH));
             UpdateNavigationControls(parentFolderId);
             multiView.SetActiveView(filesPage);
+        }
+
+        protected void btnUploadVersion_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(versionUploader.FileName))
+            {
+                return;
+            }
+            int currentFileId = int.Parse((String)ViewState[CURRENT_FILE_ID]);
+            (new DocumentsExchangeModuleController()).UploadVersion(currentFileId,
+                                    versionUploader,
+                                    Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
+                                    tbxVersionComment.Text,
+                                    UserId);
+            ShowFileVersions(currentFileId);
         }
 
         protected void lstContent_SelectedIndexChanged(object sender, EventArgs e)
@@ -183,7 +230,21 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
 
         }
 
-        
+
+        private void ShowFileVersions(int fileId)
+        {
+            if (fileId < 1)
+            {
+                return;
+            }
+
+            DocumentsExchangeModuleController moduleController =
+                new DocumentsExchangeModuleController();
+
+            lstVersions.DataSource = moduleController.GetVersions(fileId);
+            lstVersions.DataBind();
+            multiView.SetActiveView(versionsPage);
+        }
 
         private void UpdateNavigationControls(int? parentFolderId)
         {
@@ -267,6 +328,7 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             DocumentsExchangeModuleController moduleController =
                 new DocumentsExchangeModuleController();
             String fileContentType = moduleController.GetFileContentType(fileId);
+            String originalFileName = moduleController.GetOriginalFileName(fileId);
             String localFileName = moduleController.GetFileLastVersionLocalName(fileId);
             if (!String.IsNullOrWhiteSpace(fileContentType) &&
                 !String.IsNullOrWhiteSpace(localFileName))
@@ -274,7 +336,7 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                 (new DocumentsExchangeModuleController()).
                         DownloadFile(Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
                              localFileName,
-                             localFileName,
+                             originalFileName,
                              fileContentType,
                              Response);
             }
@@ -299,6 +361,30 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             else
             {
                 tblUp.Visible = true;
+            }
+        }
+
+        protected void lbtnVersionComment_Click(Object sender, EventArgs e)
+        {
+            int currentFileId = int.Parse((String)ViewState[CURRENT_FILE_ID]);
+            DocumentsExchangeModuleController moduleController =
+                new DocumentsExchangeModuleController();
+            String fileContentType = moduleController.GetFileContentType(currentFileId);
+            String originalFileName = moduleController.GetOriginalFileName(currentFileId);
+            int versionId = int.Parse(lstVersions.DataKeys
+                                            [((DataListItem)((Control)sender).NamingContainer).ItemIndex]
+                                            .ToString());
+            String localFileName = moduleController.GetVersionLocalName(versionId);
+
+            if (!String.IsNullOrWhiteSpace(fileContentType) &&
+                !String.IsNullOrWhiteSpace(localFileName))
+            {
+                (new DocumentsExchangeModuleController()).
+                        DownloadFile(Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
+                             localFileName,
+                             originalFileName,
+                             fileContentType,
+                             Response);
             }
         }
     }

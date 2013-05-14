@@ -121,10 +121,23 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("DocumentsExchangeModule_GetFiles"), parentFolderId);
         }
 
+        public override IDataReader GetVersions(int fileId)
+        {
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("DocumentsExchangeModule_GetVersions"), fileId);
+        }
+
         public override String GetFileContentType(int fileId)
         {
             String command = String.Format("select {0} ({1})",
                             GetFullyQualifiedName("DocumentsExchangeModule_GetFileContentType"),
+                            fileId);
+            return (String)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
+        }
+
+        public override string GetOriginalFileName(int fileId)
+        {
+            String command = String.Format("select {0} ({1})",
+                            GetFullyQualifiedName("DocumentsExchangeModule_GetOriginalFileName"),
                             fileId);
             return (String)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
         }
@@ -134,6 +147,14 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             String command = String.Format("select {0} ({1})",
                             GetFullyQualifiedName("DocumentsExchangeModule_GetFileLastVersionLocalName"),
                             fileId);
+            return (String)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
+        }
+
+        public override String GetVersionLocalName(int versionId)
+        {
+            String command = String.Format("select {0} ({1})",
+                            GetFullyQualifiedName("DocumentsExchangeModule_GetVersionLocalName"),
+                            versionId);
             return (String)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
         }
 
@@ -180,6 +201,16 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                         contentType,
                         creatorUserId,
                         localFileName);
+        }
+
+        public override void AddVersion(int currentFileId, string calculatedLocalFileName, string versionComment, int creatorUserId)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                        GetFullyQualifiedName("DocumentsExchangeModule_AddVersion"),
+                        currentFileId,
+                        calculatedLocalFileName,
+                        versionComment,
+                        creatorUserId);
         }
 
         public override IDataReader GetDocumentsExchangeModules(int ModuleId)

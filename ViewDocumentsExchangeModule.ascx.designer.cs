@@ -139,6 +139,96 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule {
         protected global::System.Web.UI.WebControls.LinkButton lbtnShowFilesPage;
         
         /// <summary>
+        /// versionsPage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View versionsPage;
+        
+        /// <summary>
+        /// lblCurrentFileDescription control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblCurrentFileDescription;
+        
+        /// <summary>
+        /// lstVersions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DataList lstVersions;
+        
+        /// <summary>
+        /// lbtnShowUploadVersionPage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowUploadVersionPage;
+        
+        /// <summary>
+        /// lbtnShowFilesPageFromVersionsPage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowFilesPageFromVersionsPage;
+        
+        /// <summary>
+        /// uploadVersionPage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View uploadVersionPage;
+        
+        /// <summary>
+        /// tbxVersionComment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbxVersionComment;
+        
+        /// <summary>
+        /// versionUploader control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload versionUploader;
+        
+        /// <summary>
+        /// btnUploadVersion control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnUploadVersion;
+        
+        /// <summary>
+        /// lbtnShowVersionsPageFromUploadVersionPage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowVersionsPageFromUploadVersionPage;
+        
+        /// <summary>
         /// createFolderPage control.
         /// </summary>
         /// <remarks>
