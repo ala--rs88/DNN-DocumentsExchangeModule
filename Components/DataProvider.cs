@@ -2,6 +2,7 @@
 using System;
 using System.Data;
 using DotNetNuke;
+using IgorKarpov.DocumentsExchangeModule.Components.Entities;
 
 namespace IgorKarpov.Modules.DocumentsExchangeModule
 {
@@ -57,18 +58,26 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         public abstract IDataReader GetFolders(int? parentFolderId);
         public abstract IDataReader GetFiles(int? parentFolderId);
         public abstract IDataReader GetVersions(int fileId);
+        public abstract Schedule GetSchedule(int userId);
+
+        public abstract void UpdateSchedule(int userId, String mon, String tue, String wed, String thu, String fri, String sat, String sun);
 
         public abstract String GetFileContentType(int fileId);
         public abstract String GetOriginalFileName(int fileId);
         public abstract String GetFileLastVersionLocalName(int fileId);
         public abstract String GetVersionLocalName(int versionId);
         public abstract int GetRelatedVersionsCount(int versionId);
-
+        public abstract int GetFilesCount(String fileName);
+        public abstract int GetSchedulesFolderId();
+        public abstract int GetFileId(String originalFileName);
+        
         public abstract bool IsOriginalFileNameLocallyAvailable(int? parentFolderId, String targetName);
         public abstract bool IsFolderNameLocallyAvailable(int? parentFolderId, String targetName);
         public abstract void AddFolder(int? parentFolderId, String name, int creatorUserId);
         public abstract void AddNewFile(int? parentFolderId, String originalName, String contentType, int creatorUserId, String localFileName);
         public abstract void AddVersion(int currentFileId, String calculatedLocalFileName, String versionComment, int creatorUserId);
+        public abstract void CheckScheduleAvailability(int userId);
+        public abstract void CheckSchedulesFolderAvailability(int userId);
 
         public abstract void DeleteFolder(int folderId);
         public abstract void DeleteFile(int fileId);
@@ -82,5 +91,7 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
         public abstract void DeleteDocumentsExchangeModule(int ModuleId, int ItemId);
 
         #endregion
+
+        
     }
 }

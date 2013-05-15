@@ -216,3 +216,90 @@ BEGIN
 		WHERE Id = @versionId
 END
 GO
+
+--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_CheckScheduleAvailability]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].[IgorKarpov_DocumentsExchangeModule_CheckScheduleAvailability]
+GO
+create procedure [dbo].[IgorKarpov_DocumentsExchangeModule_CheckScheduleAvailability]
+	@userId int
+as
+BEGIN
+	declare @currentUserSchedulesCount int
+
+	SELECT @currentUserSchedulesCount = COUNT(*)
+		FROM [dbo].[IgorKarpov_DocumentsExchangeModule_Schedules]
+		WHERE [UserId] = @userId
+		
+	IF @currentUserSchedulesCount = 0
+		INSERT INTO [dbo].[IgorKarpov_DocumentsExchangeModule_Schedules]
+			VALUES (@userId, GETDATE(), '', '', '', '', '', '', '')
+END
+GO
+
+
+--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_GetSchedule]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].[IgorKarpov_DocumentsExchangeModule_GetSchedule]
+GO
+
+create procedure [dbo].[IgorKarpov_DocumentsExchangeModule_GetSchedule]
+	@userId int
+AS
+	SELECT TOP(1) *
+		FROM [dbo].[IgorKarpov_DocumentsExchangeModule_Schedules]
+		WHERE [UserId] = @userId
+		ORDER BY [Id] desc
+GO
+
+--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_UpdateSchedule]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].[IgorKarpov_DocumentsExchangeModule_UpdateSchedule]
+GO
+
+create procedure [dbo].[IgorKarpov_DocumentsExchangeModule_UpdateSchedule]
+	@userId int,
+	@mon nvarchar(max),
+	@tue nvarchar(max),
+	@wed nvarchar(max),
+	@thu nvarchar(max),
+	@fri nvarchar(max),
+	@sat nvarchar(max),
+	@sun nvarchar(max)
+AS
+	UPDATE [dbo].[IgorKarpov_DocumentsExchangeModule_Schedules]
+		SET [Mon] = @mon,
+			[Tue] = @tue,
+			[Wed] = @wed,
+			[Thu] = @thu,
+			[Fri] = @fri,
+			[Sat] = @sat,
+			[Sun] = @sun,
+			[LastModificationDate] = GETDATE()
+		WHERE [UserId] = @userId
+GO
+
+
+--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_CheckSchedulesFolderAvailability]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure [dbo].[IgorKarpov_DocumentsExchangeModule_CheckSchedulesFolderAvailability]
+GO
+create procedure [dbo].[IgorKarpov_DocumentsExchangeModule_CheckSchedulesFolderAvailability]
+	@hostId int
+as
+BEGIN
+	declare @schedulesFoldersCount int
+
+	SELECT @schedulesFoldersCount = COUNT(*)
+		FROM [dbo].[IgorKarpov_DocumentsExchangeModule_Folders]
+		WHERE [Name] = 'Schedules'
+		
+	IF @schedulesFoldersCount = 0
+		INSERT INTO [dbo].[IgorKarpov_DocumentsExchangeModule_Folders]
+			VALUES (NULL, 'Schedules', @hostId, GETDATE())
+END
+GO

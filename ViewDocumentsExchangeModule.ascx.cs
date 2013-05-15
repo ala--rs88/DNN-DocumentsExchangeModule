@@ -10,6 +10,7 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Modules.Actions;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.Localization;
+using DotNetNuke.UI.UserControls;
 using IgorKarpov.DocumentsExchangeModule.Components.Entities;
 using IgorKarpov.DocumentsExchangeModule.Extensions;
 using File = IgorKarpov.DocumentsExchangeModule.Components.Entities.File;
@@ -432,6 +433,40 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             }
             int currentFileId = int.Parse((String)ViewState[CURRENT_FILE_ID]);
             ShowFileVersions(currentFileId);
+        }
+
+        protected void lbtnShowSchedulePage_Click(object sender, EventArgs e)
+        {
+            Schedule currentUserSchedule = (new DocumentsExchangeModuleController()).GetCurrentUserSchedule(UserInfo.UserID);
+            tbxMon.Text = currentUserSchedule.Mon;
+            tbxTue.Text = currentUserSchedule.Tue;
+            tbxWed.Text = currentUserSchedule.Wed;
+            tbxThu.Text = currentUserSchedule.Thu;
+            tbxFri.Text = currentUserSchedule.Fri;
+            tbxSat.Text = currentUserSchedule.Sat;
+            tbxSun.Text = currentUserSchedule.Sun;
+            lblLastModified.Text = String.Format("Last modified: {0}",
+                                                 currentUserSchedule.LastModificationDate.ToString());
+            multiView.SetActiveView(schedulesPage);
+        }
+
+        protected void lbtnSaveSchedule_Click(object sender, EventArgs e)
+        {
+            (new DocumentsExchangeModuleController()).UpdateSchedule(UserInfo.UserID,
+                                                                     UserInfo.DisplayName,
+                                                                     Server.MapPath(UPLOADS_FOLDER_RELATIVE_PATH),
+                                                                     tbxMon.Text,
+                                                                     tbxTue.Text,
+                                                                     tbxWed.Text,
+                                                                     tbxThu.Text,
+                                                                     tbxFri.Text,
+                                                                     tbxSat.Text,
+                                                                     tbxSun.Text);
+        }
+
+        protected void lstFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 

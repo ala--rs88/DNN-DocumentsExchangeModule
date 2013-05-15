@@ -94,6 +94,15 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule {
         protected global::System.Web.UI.WebControls.LinkButton lbtnShowCreateFolder;
         
         /// <summary>
+        /// lbtnShowSchedulePage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowSchedulePage;
+        
+        /// <summary>
         /// uploadFilePage control.
         /// </summary>
         /// <remarks>
@@ -254,5 +263,104 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCreateFolder;
+        
+        /// <summary>
+        /// schedulesPage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View schedulesPage;
+        
+        /// <summary>
+        /// tbxMon control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbxMon;
+        
+        /// <summary>
+        /// tbxTue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbxTue;
+        
+        /// <summary>
+        /// tbxWed control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbxWed;
+        
+        /// <summary>
+        /// tbxThu control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbxThu;
+        
+        /// <summary>
+        /// tbxFri control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbxFri;
+        
+        /// <summary>
+        /// tbxSat control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbxSat;
+        
+        /// <summary>
+        /// tbxSun control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox tbxSun;
+        
+        /// <summary>
+        /// lblLastModified control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblLastModified;
+        
+        /// <summary>
+        /// lbtnSaveSchedule control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnSaveSchedule;
+        
+        /// <summary>
+        /// showFilesPageFromSchedule control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton showFilesPageFromSchedule;
     }
 }

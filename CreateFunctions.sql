@@ -170,7 +170,63 @@ BEGIN
 
 	SELECT @versionsCount = count(*) 
 		FROM [dbo].[IgorKarpov_DocumentsExchangeModule_FileVersions]
-		WHERE [FileId] = @fileId
+		WHERE [FileId] = @fileId AND [Id] >= 0
 	RETURN @versionsCount
 END
 GO
+
+--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_GetFilesCount]') and OBJECTPROPERTY(id, N'IsFunction') = 1)
+    DROP FUNCTION [dbo].[IgorKarpov_DocumentsExchangeModule_GetFilesCount];
+GO
+CREATE FUNCTION [dbo].[IgorKarpov_DocumentsExchangeModule_GetFilesCount] (@fileName nvarchar(max))
+RETURNS int
+AS
+BEGIN
+	declare @filesCount int
+
+	SELECT @filesCount = count(*) 
+		FROM [dbo].[IgorKarpov_DocumentsExchangeModule_Files]
+		WHERE [OriginalName] = @fileName AND [Id] >= 0
+	RETURN @filesCount
+END
+GO
+
+--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_GetSchedulesFolderId]') and OBJECTPROPERTY(id, N'IsFunction') = 1)
+    DROP FUNCTION [dbo].[IgorKarpov_DocumentsExchangeModule_GetSchedulesFolderId];
+GO
+CREATE FUNCTION [dbo].[IgorKarpov_DocumentsExchangeModule_GetSchedulesFolderId] ()
+RETURNS int
+AS
+BEGIN
+	declare @schedulesFolderId int
+
+	SELECT @schedulesFolderId = Id 
+		FROM [dbo].[IgorKarpov_DocumentsExchangeModule_Folders]
+		WHERE [Name] = 'Schedules'
+	RETURN @schedulesFolderId
+END
+GO
+
+--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[IgorKarpov_DocumentsExchangeModule_GetFileId]') and OBJECTPROPERTY(id, N'IsFunction') = 1)
+    DROP FUNCTION [dbo].[IgorKarpov_DocumentsExchangeModule_GetFileId];
+GO
+CREATE FUNCTION [dbo].[IgorKarpov_DocumentsExchangeModule_GetFileId] (@fileName nvarchar(max))
+RETURNS int
+AS
+BEGIN
+	declare @fileId int
+
+	SELECT @fileId = Id 
+		FROM [dbo].[IgorKarpov_DocumentsExchangeModule_Files]
+		WHERE [OriginalName] = @fileName
+	RETURN @fileId
+END
+GO
+
+

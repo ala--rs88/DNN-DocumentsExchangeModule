@@ -5,3 +5,5 @@ C:\inetpub\wwwroot\DNNDemo\bin\IgorKarpov.Modules.DocumentsExchangeModule.dll
 C:\inetpub\wwwroot\DNNDemo\bin\IgorKarpov.Modules.DocumentsExchangeModule.pdb
 C:\inetpub\wwwroot\DNNDemo\DesktopModules\IgorKarpov.DocumentsExchangeModule\obj\Debug\IgorKarpov.Modules.DocumentsExchangeModule.dll
 C:\inetpub\wwwroot\DNNDemo\DesktopModules\IgorKarpov.DocumentsExchangeModule\obj\Debug\IgorKarpov.Modules.DocumentsExchangeModule.pdb
+C:\inetpub\wwwroot\DNNDemo\DesktopModules\IgorKarpov.DocumentsExchangeModule\obj\Debug\Interop.VBIDE.dll
+C:\inetpub\wwwroot\DNNDemo\DesktopModules\IgorKarpov.DocumentsExchangeModule\obj\Debug\DocumentsExchangeModule.csproj.ResolveComReference.cache

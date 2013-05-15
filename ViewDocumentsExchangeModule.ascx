@@ -24,7 +24,10 @@
             <asp:TableRow>
                 <asp:TableCell>
                     <asp:LinkButton ID="lbtnUp" Text="..." runat="server" OnClick="lbtnUp_Click" />
-                </asp:TableCell></asp:TableRow></asp:Table><asp:DataList ID="lstFolders" DataKeyField="Id" runat="server" CellPadding="4"
+                </asp:TableCell>
+            </asp:TableRow>
+        </asp:Table>
+        <asp:DataList ID="lstFolders" DataKeyField="Id" runat="server" CellPadding="4"
             OnItemDataBound="lstFolders_ItemDataBound" BackColor="White" Width="100%">
             <ItemTemplate>
                 <table cellpadding="4" style="border-style: solid; border-color: inherit; border-width: 1px; width: 100%; height: 25px;">
@@ -33,8 +36,10 @@
                             <asp:LinkButton ID="lbtnFolderName" runat="server" Text="Name" CssClass="Normal" OnClick="lbtnFolderName_Click" />
                         </td>
                         <td valign="top" width="20%" align="center">
-                            <asp:Label ID="lblCreatedBy" runat="server" Text="Created By"></asp:Label></td><td valign="top" width="20%" align="center">
-                            <asp:Label ID="lblCreationDate" runat="server" Text="Creation Date"></asp:Label></td><td valign="top" width="20%" align="center"></td>
+                            <asp:Label ID="lblCreatedBy" runat="server" Text="Created By"></asp:Label></td>
+                        <td valign="top" width="20%" align="center">
+                            <asp:Label ID="lblCreationDate" runat="server" Text="Creation Date"></asp:Label></td>
+                        <td valign="top" width="20%" align="center"></td>
                         <td valign="top" width="10%" align="right">
 
                             <%--<asp:HyperLink ID="HyperLink1" NavigateUrl='<%# EditUrl("Id",DataBinder.Eval(Container.DataItem,"Id").ToString()) %>' 
@@ -49,7 +54,7 @@
         </asp:DataList>
 
         <asp:DataList ID="lstFiles" DataKeyField="Id" runat="server" CellPadding="4"
-            OnItemDataBound="lstFiles_ItemDataBound" BackColor="White" Width="100%">
+            OnItemDataBound="lstFiles_ItemDataBound" BackColor="White" Width="100%" OnSelectedIndexChanged="lstFiles_SelectedIndexChanged">
             <ItemTemplate>
                 <table cellpadding="4" style="border-style: solid; border-color: inherit; border-width: 1px; width: 100%; height: 25px;">
                     <tr>
@@ -57,9 +62,12 @@
                             <asp:LinkButton ID="lbtnFileName" runat="server" Text="Original Name" CssClass="Normal" OnClick="lbtnFileName_Click" />
                         </td>
                         <td valign="top" width="20%" align="center">
-                            <asp:Label ID="lblCreatedBy" runat="server" Text="Created By"></asp:Label></td><td valign="top" width="20%" align="center">
-                            <asp:Label ID="lblCreationDate" runat="server" Text="Creation Date"></asp:Label></td><td valign="top" width="20%" align="center">
-                            <asp:Label ID="lblLastVersionDate" runat="server" Text="Last Version Date"></asp:Label></td><td valign="top" width="10%" align="right">
+                            <asp:Label ID="lblCreatedBy" runat="server" Text="Created By"></asp:Label></td>
+                        <td valign="top" width="20%" align="center">
+                            <asp:Label ID="lblCreationDate" runat="server" Text="Creation Date"></asp:Label></td>
+                        <td valign="top" width="20%" align="center">
+                            <asp:Label ID="lblLastVersionDate" runat="server" Text="Last Version Date"></asp:Label></td>
+                        <td valign="top" width="10%" align="right">
 
                             <%--<asp:HyperLink ID="HyperLink1" NavigateUrl='<%# EditUrl("Id",DataBinder.Eval(Container.DataItem,"Id").ToString()) %>' 
                                 Visible="<%# IsEditable %>" runat="server">
@@ -76,6 +84,7 @@
         <div>
             <asp:LinkButton ID="lbtnShowUploadPage" runat="server" OnClick="lbtnShowUploadPage_Click" Text="Upload new file" />
             <asp:LinkButton ID="lbtnShowCreateFolder" runat="server" OnClick="lbtnShowCreateFolder_Click" Text="Create folder" />
+            <asp:LinkButton ID="lbtnShowSchedulePage" runat="server" OnClick="lbtnShowSchedulePage_Click" Text="Go to schedule" />
         </div>
 
     </asp:View>
@@ -101,17 +110,27 @@
     <asp:View ID="versionsPage" runat="server">
         <asp:Label ID="lblCurrentFileDescription" runat="server" Font-Bold="True" Font-Size="X-Large">Versions of file "FileTitle":</asp:Label><table cellpadding="4" style="width: 100%; height: 45px; background: lightgray;">
             <tr>
-                <th width="10%" style="vertical-align: middle; text-align: left;">Absolute Id</th><th width="40%" style="vertical-align: middle;">Comment</th><th width="20%" style="vertical-align: middle;">Creation Date</th><th width="20%" style="vertical-align: middle;">Created by</th><th width="10%" style="vertical-align: middle;">Actions</th></tr></table><asp:DataList ID="lstVersions" DataKeyField="Id" runat="server" CellPadding="4"
+                <th width="10%" style="vertical-align: middle; text-align: left;">Absolute Id</th>
+                <th width="40%" style="vertical-align: middle;">Comment</th>
+                <th width="20%" style="vertical-align: middle;">Creation Date</th>
+                <th width="20%" style="vertical-align: middle;">Created by</th>
+                <th width="10%" style="vertical-align: middle;">Actions</th>
+            </tr>
+        </table>
+        <asp:DataList ID="lstVersions" DataKeyField="Id" runat="server" CellPadding="4"
             OnItemDataBound="lstVersions_ItemDataBound" BackColor="White" Width="100%">
             <ItemTemplate>
                 <table cellpadding="4" style="border-style: solid; border-color: inherit; border-width: 1px; width: 100%; height: 25px;">
                     <tr>
                         <td valign="top" width="10%" align="left" style="text-align: left">
-                            <asp:Label ID="lblId" runat="server" Text="Version Id"></asp:Label></td><td valign="top" width="40%" align="center">
+                            <asp:Label ID="lblId" runat="server" Text="Version Id"></asp:Label></td>
+                        <td valign="top" width="40%" align="center">
                             <asp:LinkButton ID="lbtnVersionComment" runat="server" Text="Name" CssClass="Normal" OnClick="lbtnVersionComment_Click" /></td>
                         <td valign="top" width="20%" align="center">
-                            <asp:Label ID="lblCreationDate" runat="server" Text="Creation Date"></asp:Label></td><td valign="top" width="20%" align="center">
-                            <asp:Label ID="lblCreatedBy" runat="server" Text="Created By"></asp:Label></td><td valign="top" width="10%" align="right">
+                            <asp:Label ID="lblCreationDate" runat="server" Text="Creation Date"></asp:Label></td>
+                        <td valign="top" width="20%" align="center">
+                            <asp:Label ID="lblCreatedBy" runat="server" Text="Created By"></asp:Label></td>
+                        <td valign="top" width="10%" align="right">
                             <asp:Button ID="btnDeleteVersion" runat="server" Text="X" Height="23px" Width="23px" OnClick="btnDeleteVersion_Click" /></td>
                     </tr>
                 </table>
@@ -125,7 +144,10 @@
     </asp:View>
 
     <asp:View ID="uploadVersionPage" runat="server">
-        <label>Please, comment this version:</label> <br /><asp:TextBox ID="tbxVersionComment" runat="server"></asp:TextBox><br /><asp:FileUpload ID="versionUploader" runat="server" />
+        <label>Please, comment this version:</label>
+        <br />
+        <asp:TextBox ID="tbxVersionComment" runat="server"></asp:TextBox><br />
+        <asp:FileUpload ID="versionUploader" runat="server" />
         <asp:Button ID="btnUploadVersion" runat="server" Text="Upload" OnClick="btnUploadVersion_Click" />
         <div class="backButton">
             <asp:LinkButton ID="lbtnShowVersionsPageFromUploadVersionPage" runat="server" OnClick="btnShowVersionsPage_Click" Text="Back" />
@@ -145,7 +167,25 @@
         <asp:LinkButton runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
     </asp:View>
 
+    <asp:View ID="schedulesPage" runat="server">
+
+        <asp:TextBox ID="tbxMon" runat="server"></asp:TextBox><br />
+        <asp:TextBox ID="tbxTue" runat="server"></asp:TextBox><br />
+        <asp:TextBox ID="tbxWed" runat="server"></asp:TextBox><br />
+        <asp:TextBox ID="tbxThu" runat="server"></asp:TextBox><br />
+        <asp:TextBox ID="tbxFri" runat="server"></asp:TextBox><br />
+        <asp:TextBox ID="tbxSat" runat="server"></asp:TextBox><br />
+        <asp:TextBox ID="tbxSun" runat="server"></asp:TextBox><br />
+        <asp:Label ID="lblLastModified" runat="server" Text="">
+            <br/>
+            
+        </asp:Label><asp:LinkButton ID="lbtnSaveSchedule" runat="server" OnClick="lbtnSaveSchedule_Click" Text="Update" />
+        <div class="backButton">
+            <asp:LinkButton ID="showFilesPageFromSchedule" runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
+        </div>
+    </asp:View>
 </asp:MultiView>
 
 <p>
-    &nbsp; </p>
+    &nbsp;
+</p>

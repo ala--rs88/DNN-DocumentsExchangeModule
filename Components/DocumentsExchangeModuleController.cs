@@ -351,5 +351,86 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             DataProvider.Instance().DeleteVersion(versionId);
             return true;
         }
+
+        public Schedule GetCurrentUserSchedule(int userId)
+        {
+            DataProvider.Instance().CheckScheduleAvailability(userId);
+            return DataProvider.Instance().GetSchedule(userId);
+        }
+
+        public void UpdateSchedule(int userId, String userName, String uploadsFolderPath,
+                                    String mon, String tue, String wed, String thu, String fri, String sat, String sun)
+        {
+            DataProvider.Instance().UpdateSchedule(userId, mon, tue, wed, thu, fri, sat, sun);
+            UpdateScheduleDocument(userId, userName, uploadsFolderPath);
+        }
+
+        private bool UpdateScheduleDocument(int userId, String username, String uploadsFolderPath)
+        {
+            DataProvider.Instance().CheckSchedulesFolderAvailability(userId);
+
+            Schedule schedule = DataProvider.Instance().GetSchedule(userId);
+            String localFileName = SaveScheduleToFileSystem(uploadsFolderPath, schedule);
+            if (String.IsNullOrWhiteSpace(localFileName))
+            {
+                return false;
+            }
+            String originalFileName = EvaluateScheduleDocumentName(userId, username);
+
+            if (DataProvider.Instance().GetFilesCount(originalFileName) < 1)
+            {
+                String contentType = "text/plain";
+                AddScheduleDocument(originalFileName, contentType, userId, localFileName);
+            }
+            else
+            {
+                int existingFileId = DataProvider.Instance().GetFileId(originalFileName);
+                AddScheduleVersion(existingFileId, localFileName, userId);
+            }
+            return true;
+        }
+
+        private String EvaluateScheduleDocumentName(int userId, String username)
+        {
+            return String.Format("[{0}] - {1} - Schedule", userId, username);
+        }
+
+        private String SaveScheduleToFileSystem(String uploadsFolderPath, Schedule schedule)
+        {
+            if (!Directory.Exists(uploadsFolderPath))
+            {
+                return String.Empty;
+            }
+
+            String extension = ".txt";
+
+            String calculatedLocalFileName = CalculateLocalFileName(uploadsFolderPath, extension);
+            if (String.IsNullOrWhiteSpace(calculatedLocalFileName))
+            {
+                return String.Empty;
+            }
+            schedule.SaveAs(uploadsFolderPath + calculatedLocalFileName);
+            return !System.IO.File.Exists(uploadsFolderPath + calculatedLocalFileName)
+                    ? String.Empty
+                    : calculatedLocalFileName;
+        }
+
+        private void AddScheduleDocument(String originalFileName, String contentType, int creatorUserId, String localFileName)
+        {
+            int parentFolderId = DataProvider.Instance().GetSchedulesFolderId();
+            DataProvider.Instance().AddNewFile(parentFolderId,
+                                               originalFileName,
+                                               contentType,
+                                               creatorUserId,
+                                               localFileName);
+        }
+
+        private void AddScheduleVersion(int existingFileId, String localFileName, int creatorUserId)
+        {
+            DataProvider.Instance().AddVersion(existingFileId,
+                                               localFileName,
+                                               "Auto-Generated",
+                                               creatorUserId);
+        }
     }
 }

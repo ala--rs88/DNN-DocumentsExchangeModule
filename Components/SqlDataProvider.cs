@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Framework.Providers;
+using IgorKarpov.DocumentsExchangeModule.Components.Entities;
 using Microsoft.ApplicationBlocks.Data;
 
 namespace IgorKarpov.Modules.DocumentsExchangeModule
@@ -126,6 +127,44 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, GetFullyQualifiedName("DocumentsExchangeModule_GetVersions"), fileId);
         }
 
+        public override Schedule GetSchedule(int userId)
+        {
+            IDataReader entityReader = SqlHelper.ExecuteReader(ConnectionString,
+                                                               GetFullyQualifiedName(
+                                                                   "DocumentsExchangeModule_GetSchedule"),
+                                                               userId);
+            Object[] columnsValues = new Object[10];
+            entityReader.Read();
+            entityReader.GetValues(columnsValues);
+            return new Schedule
+                {
+                    Id = (int)columnsValues[0],
+                    UserId = (int)columnsValues[1],
+                    LastModificationDate = (DateTime)columnsValues[2],
+                    Mon = (String)columnsValues[3],
+                    Tue = (String)columnsValues[4],
+                    Wed = (String)columnsValues[5],
+                    Thu = (String)columnsValues[6],
+                    Fri = (String)columnsValues[7],
+                    Sat = (String)columnsValues[8],
+                    Sun = (String)columnsValues[9]
+                };
+        }
+
+        public override void UpdateSchedule(int userId, String mon, String tue, String wed, String thu, String fri, String sat, String sun)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                        GetFullyQualifiedName("DocumentsExchangeModule_UpdateSchedule"),
+                        userId,
+                        mon,
+                        tue,
+                        wed,
+                        thu,
+                        fri,
+                        sat,
+                        sun);
+        }
+
         public override String GetFileContentType(int fileId)
         {
             String command = String.Format("select {0} ({1})",
@@ -163,6 +202,29 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
             String command = String.Format("select {0} ({1})",
                             GetFullyQualifiedName("DocumentsExchangeModule_GetRelatedVersionsCount"),
                             versionId);
+            return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
+        }
+
+        public override int GetFilesCount(String fileName)
+        {
+            String command = String.Format("select {0} ('{1}')",
+                            GetFullyQualifiedName("DocumentsExchangeModule_GetFilesCount"),
+                            fileName);
+            return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
+        }
+
+        public override int GetSchedulesFolderId()
+        {
+            String command = String.Format("select {0} ()",
+                            GetFullyQualifiedName("DocumentsExchangeModule_GetSchedulesFolderId"));
+            return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
+        }
+
+        public override int GetFileId(string originalFileName)
+        {
+            String command = String.Format("select {0} ('{1}')",
+                            GetFullyQualifiedName("DocumentsExchangeModule_GetFileId"),
+                            originalFileName);
             return (int)SqlHelper.ExecuteScalar(ConnectionString, CommandType.Text, command);
         }
 
@@ -219,6 +281,20 @@ namespace IgorKarpov.Modules.DocumentsExchangeModule
                         calculatedLocalFileName,
                         versionComment,
                         creatorUserId);
+        }
+
+        public override void CheckScheduleAvailability(int userId)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                        GetFullyQualifiedName("DocumentsExchangeModule_CheckScheduleAvailability"),
+                        userId);
+        }
+
+        public override void CheckSchedulesFolderAvailability(int userId)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString,
+                        GetFullyQualifiedName("DocumentsExchangeModule_CheckSchedulesFolderAvailability"),
+                        userId);
         }
 
         public override void DeleteFolder(int folderId)
