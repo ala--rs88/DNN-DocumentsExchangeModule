@@ -33,6 +33,7 @@
                 <table cellpadding="4" style="border-style: solid; border-color: inherit; border-width: 1px; width: 100%; height: 25px;">
                     <tr>
                         <td valign="top" width="30%" align="left">
+                            <img alt="" src="/DNNDemo/images/FileManager/Icons/ClosedFolder.gif" />
                             <asp:LinkButton ID="lbtnFolderName" runat="server" Text="Name" CssClass="Normal" OnClick="lbtnFolderName_Click" />
                         </td>
                         <td valign="top" width="20%" align="center">
@@ -47,7 +48,8 @@
                                 <asp:Image ID="Image1" runat="server" ImageUrl="~/images/edit.gif" AlternateText="Edit"
                                     Visible="<%#IsEditable%>" resourcekey="Edit" />
                             </asp:HyperLink>--%>
-                            <asp:Button ID="btnDeleteFolder" runat="server" Text="X" Height="23px" Width="23px" OnClick="btnDeleteFolder_Click" /></td>
+                            <asp:ImageButton ID="ImageButton1" runat="server" ImageUrl="/DNNDemo/images/FileManager/ToolBarDeleteEnabled.gif" OnClick="btnDeleteFolder_Click" />
+                            <%-- <asp:Button ID="btnDeleteFolder" runat="server" Text="X" Height="23px" Width="23px" OnClick="btnDeleteFolder_Click" /></td>--%>
                     </tr>
                 </table>
             </ItemTemplate>
@@ -59,6 +61,7 @@
                 <table cellpadding="4" style="border-style: solid; border-color: inherit; border-width: 1px; width: 100%; height: 25px;">
                     <tr>
                         <td valign="top" width="30%" align="left">
+                            <img alt="" src="/DNNDemo/images/FileManager/Icons/File.gif" />
                             <asp:LinkButton ID="lbtnFileName" runat="server" Text="Original Name" CssClass="Normal" OnClick="lbtnFileName_Click" />
                         </td>
                         <td valign="top" width="20%" align="center">
@@ -74,16 +77,21 @@
                                 <asp:Image ID="Image1" runat="server" ImageUrl="~/images/edit.gif" AlternateText="Edit"
                                     Visible="<%#IsEditable%>" resourcekey="Edit" />
                             </asp:HyperLink>--%>
-                            <asp:Button ID="btnShowVersionsPage" OnClick="btnShowVersionsPage_Click" runat="server" Text="V" Height="23px" Width="23px" />
-                            <asp:Button ID="btnDeleteFile" runat="server" Text="X" Height="23px" Width="23px" OnClick="btnDeleteFile_Click" /></td>
+
+                            <asp:ImageButton ID="ImageButton2" runat="server" ImageUrl="/DNNDemo/images/FileManager/DNNExplorer_edit.gif" OnClick="btnShowVersionsPage_Click" />
+                            <%--<asp:Button ID="btnShowVersionsPage" OnClick="btnShowVersionsPage_Click" runat="server" Text="V" Height="23px" Width="23px" />--%>
+                            <asp:ImageButton ID="ImageButton1" runat="server" ImageUrl="/DNNDemo/images/FileManager/ToolBarDeleteEnabled.gif" OnClick="btnDeleteFile_Click" />
+                            <%--<asp:Button ID="btnDeleteFile" runat="server" Text="X" Height="23px" Width="23px" OnClick="btnDeleteFile_Click" /></td>--%>
                     </tr>
                 </table>
             </ItemTemplate>
         </asp:DataList>
 
         <div>
-            <asp:LinkButton ID="lbtnShowUploadPage" runat="server" OnClick="lbtnShowUploadPage_Click" Text="Upload new file" />
-            <asp:LinkButton ID="lbtnShowCreateFolder" runat="server" OnClick="lbtnShowCreateFolder_Click" Text="Create folder" />
+            <br />
+            <asp:LinkButton ID="lbtnShowUploadPage" runat="server" OnClick="lbtnShowUploadPage_Click" Text="Upload new file" />&nbsp;&nbsp;
+            <asp:LinkButton ID="lbtnShowCreateFolder" runat="server" OnClick="lbtnShowCreateFolder_Click" Text="Create folder" /><br />
+            <br />
             <asp:LinkButton ID="lbtnShowSchedulePage" runat="server" OnClick="lbtnShowSchedulePage_Click" Text="Go to schedule" />
         </div>
 
@@ -92,8 +100,10 @@
     <asp:View ID="uploadFilePage" runat="server">
         <asp:FileUpload ID="fileUploader" runat="server" />
         <asp:Button ID="uploadButton" runat="server" CssClass="myButton" Text="Upload" OnClick="uploadButton_Click" />
+
         <asp:Panel ID="Panel1" runat="server">
             <div class="backButton">
+                <br />
                 <asp:LinkButton ID="lbtnShowFilesPage" runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
             </div>
         </asp:Panel>
@@ -131,14 +141,19 @@
                         <td valign="top" width="20%" align="center">
                             <asp:Label ID="lblCreatedBy" runat="server" Text="Created By"></asp:Label></td>
                         <td valign="top" width="10%" align="right">
-                            <asp:Button ID="btnDeleteVersion" runat="server" Text="X" Height="23px" Width="23px" OnClick="btnDeleteVersion_Click" /></td>
+                            <asp:ImageButton ID="ImageButton1" runat="server" ImageUrl="/DNNDemo/images/FileManager/ToolBarDeleteEnabled.gif" OnClick="btnDeleteVersion_Click" />
+                            <%--<asp:Button ID="btnDeleteVersion" runat="server" Text="X" Height="23px" Width="23px" OnClick="btnDeleteVersion_Click" />--%>
+                        </td>
                     </tr>
                 </table>
             </ItemTemplate>
         </asp:DataList>
 
+        <br />
         <asp:LinkButton ID="lbtnShowUploadVersionPage" runat="server" OnClick="lbtnShowUploadVersionPage_Click" Text="Upload new version" />
+
         <div class="backButton">
+            <br />
             <asp:LinkButton ID="lbtnShowFilesPageFromVersionsPage" runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
         </div>
     </asp:View>
@@ -147,9 +162,11 @@
         <label>Please, comment this version:</label>
         <br />
         <asp:TextBox ID="tbxVersionComment" runat="server"></asp:TextBox><br />
+        <br />
         <asp:FileUpload ID="versionUploader" runat="server" />
         <asp:Button ID="btnUploadVersion" runat="server" Text="Upload" OnClick="btnUploadVersion_Click" />
         <div class="backButton">
+            <br />
             <asp:LinkButton ID="lbtnShowVersionsPageFromUploadVersionPage" runat="server" OnClick="btnShowVersionsPage_Click" Text="Back" />
         </div>
         <script>
@@ -163,24 +180,36 @@
     </asp:View>
 
     <asp:View ID="createFolderPage" runat="server">
+        <label>Please, specify folder name here:</label>
+        <br />
         <asp:TextBox ID="txtbxTargetFileName" runat="server"></asp:TextBox><asp:Button ID="btnCreateFolder" Text="Create folder" OnClick="btnCreateFolder_Click" runat="server" />
+        <br />
+        <br />
         <asp:LinkButton runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
     </asp:View>
 
     <asp:View ID="schedulesPage" runat="server">
-
-        <asp:TextBox ID="tbxMon" runat="server"></asp:TextBox><br />
-        <asp:TextBox ID="tbxTue" runat="server"></asp:TextBox><br />
-        <asp:TextBox ID="tbxWed" runat="server"></asp:TextBox><br />
-        <asp:TextBox ID="tbxThu" runat="server"></asp:TextBox><br />
-        <asp:TextBox ID="tbxFri" runat="server"></asp:TextBox><br />
-        <asp:TextBox ID="tbxSat" runat="server"></asp:TextBox><br />
-        <asp:TextBox ID="tbxSun" runat="server"></asp:TextBox><br />
+        <label>Mon:</label><br />
+        <asp:TextBox ID="tbxMon" TextMode="multiline" runat="server" Height="150px" Width="500px"></asp:TextBox><br />
+        <label>Tue:</label><br />
+        <asp:TextBox ID="tbxTue" TextMode="multiline" runat="server" Height="150px" Width="500px"></asp:TextBox><br />
+        <label>Wed:</label><br />
+        <asp:TextBox ID="tbxWed" TextMode="multiline" runat="server" Height="150px" Width="500px"></asp:TextBox><br />
+        <label>Thu:</label><br />
+        <asp:TextBox ID="tbxThu" TextMode="multiline" runat="server" Height="150px" Width="500px"></asp:TextBox><br />
+        <label>Fri:</label><br />
+        <asp:TextBox ID="tbxFri" TextMode="multiline" runat="server" Height="150px" Width="500px"></asp:TextBox><br />
+        <label>Sat:</label><br />
+        <asp:TextBox ID="tbxSat" TextMode="multiline" runat="server" Height="150px" Width="500px"></asp:TextBox><br />
+        <label>Sun:</label><br />
+        <asp:TextBox ID="tbxSun" TextMode="multiline" runat="server" Height="150px" Width="500px"></asp:TextBox><br />
+        <br />
         <asp:Label ID="lblLastModified" runat="server" Text="">
-            <br/>
-            
-        </asp:Label><asp:LinkButton ID="lbtnSaveSchedule" runat="server" OnClick="lbtnSaveSchedule_Click" Text="Update" />
+        </asp:Label><br />
+        <br />
+        <asp:LinkButton ID="lbtnSaveSchedule" runat="server" OnClick="lbtnSaveSchedule_Click" Text="Update Schedule" />
         <div class="backButton">
+            <br/>
             <asp:LinkButton ID="showFilesPageFromSchedule" runat="server" OnClick="lbtnShowFilesPage_Click" Text="Back" />
         </div>
     </asp:View>
